@@ -284,7 +284,7 @@ export async function getRecipes(includeArchived = false): Promise<Recipe[]> {
     try {
       let query = supabase
         .from('recipes')
-        .select('*, items:recipe_items(*), additional_costs:recipe_additional_costs(*)')
+        .select('*, items:recipe_items!recipe_items_recipe_id_fkey(*), additional_costs:recipe_additional_costs(*)')
         .order('name', { ascending: true });
 
       if (!includeArchived) {

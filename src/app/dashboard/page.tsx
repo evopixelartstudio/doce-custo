@@ -107,15 +107,15 @@ export default function DashboardPage() {
           </div>
 
           {/* Quick Action Buttons */}
-          <div className="flex items-center gap-2.5">
-            <Link href="/ingredientes/novo">
-              <Button variant="outline" size="sm" className="font-medium">
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2.5 w-full sm:w-auto">
+            <Link href="/ingredientes/novo" className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full h-11 sm:h-9 font-medium text-xs sm:text-sm justify-center">
                 <Plus className="h-4 w-4 mr-1 text-[#C86D7F]" />
                 Novo Ingrediente
               </Button>
             </Link>
-            <Link href="/receitas/nova">
-              <Button size="sm" className="font-medium shadow-sm">
+            <Link href="/receitas/nova" className="w-full sm:w-auto">
+              <Button className="w-full h-11 sm:h-9 font-medium shadow-sm text-xs sm:text-sm justify-center">
                 <ChefHat className="h-4 w-4 mr-1" />
                 Criar Receita
               </Button>

@@ -236,10 +236,12 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
                 </label>
                 <Input
                   type="number"
+                  inputMode="decimal"
                   step="any"
                   placeholder="Ex: 200, 1, 500..."
                   value={packageQuantity}
                   onChange={(e) => setPackageQuantity(e.target.value)}
+                  className="h-11 text-base sm:text-sm font-medium"
                   required
                 />
               </div>
@@ -251,7 +253,7 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
                 <select
                   value={packageUnit}
                   onChange={(e) => setPackageUnit(e.target.value as UnitType)}
-                  className="flex h-11 w-full rounded-xl border border-[#EFE4E6] bg-white px-3.5 py-2 text-sm text-[#2E2226] focus:border-[#C86D7F] focus:outline-none focus:ring-2 focus:ring-[#C86D7F]/20"
+                  className="flex h-11 w-full rounded-xl border border-[#EFE4E6] bg-white px-3.5 py-2 text-base sm:text-sm text-[#2E2226] focus:border-[#C86D7F] focus:outline-none focus:ring-2 focus:ring-[#C86D7F]/20"
                 >
                   {unitOptions.map((u) => (
                     <option key={u.value} value={u.value}>
@@ -267,10 +269,12 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
                 </label>
                 <Input
                   type="number"
+                  inputMode="decimal"
                   step="0.01"
                   placeholder="Ex: 10.00"
                   value={packagePrice}
                   onChange={(e) => setPackagePrice(e.target.value)}
+                  className="h-11 text-base sm:text-sm font-medium"
                   required
                 />
               </div>
@@ -367,13 +371,13 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
         </Card>
 
         {/* Submit Actions */}
-        <div className="flex items-center justify-end gap-3 pt-2">
-          <Link href="/ingredientes">
-            <Button type="button" variant="outline">
+        <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-2">
+          <Link href="/ingredientes" className="w-full sm:w-auto">
+            <Button type="button" variant="outline" className="w-full sm:w-auto h-12 sm:h-10 text-sm font-medium">
               Cancelar
             </Button>
           </Link>
-          <Button type="submit" disabled={loading} className="font-semibold shadow-sm">
+          <Button type="submit" disabled={loading} className="w-full sm:w-auto h-12 sm:h-10 font-semibold shadow-sm text-sm">
             <Save className="h-4 w-4 mr-1.5" />
             {loading ? 'Salvando...' : 'Salvar Ingrediente'}
           </Button>

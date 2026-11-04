@@ -180,88 +180,158 @@ export default function IngredientesPage() {
               </Link>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-[#FDFBF9] border-b border-[#EFE4E6] text-[11px] font-semibold text-[#7C6970] uppercase tracking-wider">
-                  <tr>
-                    <th className="py-3 px-4">Ingrediente</th>
-                    <th className="py-3 px-4">Categoria</th>
-                    <th className="py-3 px-4">Embalagem Comprada</th>
-                    <th className="py-3 px-4">Preço da Compra</th>
-                    <th className="py-3 px-4">Custo Base Calculado</th>
-                    <th className="py-3 px-4 text-right">Ações</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#F5ECED]">
-                  {filtered.map((item) => (
-                    <tr
-                      key={item.id}
-                      className="hover:bg-[#FDFBF9]/80 transition-colors"
-                    >
-                      <td className="py-3.5 px-4 font-medium text-[#2E2226]">
-                        <div>
-                          <span className="font-semibold">{item.name}</span>
-                          {item.brand && (
-                            <span className="block text-xs text-[#8C7A82]">
-                              Marca: {item.brand}
-                            </span>
-                          )}
-                        </div>
-                      </td>
+            <>
+              {/* Mobile Card List View (< md) */}
+              <div className="md:hidden divide-y divide-[#F5ECED]">
+                {filtered.map((item) => (
+                  <div key={item.id} className="p-4 space-y-3 bg-white">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h3 className="font-semibold text-base text-[#2E2226]">
+                          {item.name}
+                        </h3>
+                        {item.brand && (
+                          <span className="text-xs text-[#8C7A82] block">
+                            Marca: {item.brand}
+                          </span>
+                        )}
+                      </div>
+                      <Badge variant="secondary" className="capitalize text-[11px] shrink-0">
+                        {categoryLabels[item.category] || item.category}
+                      </Badge>
+                    </div>
 
-                      <td className="py-3.5 px-4">
-                        <Badge variant="secondary" className="capitalize text-[11px]">
-                          {categoryLabels[item.category] || item.category}
-                        </Badge>
-                      </td>
-
-                      <td className="py-3.5 px-4 text-[#4A2832] font-medium">
-                        {formatQuantity(item.package_quantity)}{' '}
-                        {item.package_unit}
-                      </td>
-
-                      <td className="py-3.5 px-4 font-semibold text-[#2E2226]">
-                        {formatCurrency(item.package_price)}
-                      </td>
-
-                      <td className="py-3.5 px-4">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-[#FDF0F3] text-[#8A3E50] font-mono font-semibold text-xs border border-[#F7D8DF]">
+                    <div className="grid grid-cols-2 gap-2 text-xs bg-[#FDFBF9] p-3 rounded-xl border border-[#F0E6E8]">
+                      <div>
+                        <span className="text-[#8C7A82] block">Embalagem:</span>
+                        <span className="font-medium text-[#4A2832]">
+                          {formatQuantity(item.package_quantity)} {item.package_unit}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[#8C7A82] block">Preço Pago:</span>
+                        <span className="font-bold text-[#2E2226]">
+                          {formatCurrency(item.package_price)}
+                        </span>
+                      </div>
+                      <div className="col-span-2 pt-1 border-t border-[#F5ECED] flex items-center justify-between">
+                        <span className="text-[#8A3E50] font-medium">Custo Unitário:</span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-[#FDF0F3] text-[#8A3E50] font-mono font-bold text-xs">
                           {formatUnitCost(item.cost_per_base_unit, item.base_unit)}
                         </span>
-                      </td>
+                      </div>
+                    </div>
 
-                      <td className="py-3.5 px-4 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button
-                            title="Histórico de alterações de preço"
-                            onClick={() => openHistory(item)}
-                            className="p-2 rounded-lg text-[#7C6970] hover:text-[#4A2832] hover:bg-[#F8EEF0] transition-colors"
-                          >
-                            <History className="h-4 w-4" />
-                          </button>
+                    <div className="flex items-center justify-end gap-2 pt-1">
+                      <button
+                        onClick={() => openHistory(item)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-[#7C6970] bg-[#FDFBF9] border border-[#EFE4E6] active:bg-[#F8EEF0]"
+                      >
+                        <History className="h-3.5 w-3.5" />
+                        Histórico
+                      </button>
+                      <Link
+                        href={`/ingredientes/${item.id}`}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-[#C86D7F] bg-[#FDF0F3] border border-[#F7D8DF] active:bg-[#F8EEF0]"
+                      >
+                        <Edit2 className="h-3.5 w-3.5" />
+                        Editar
+                      </Link>
+                      <button
+                        onClick={() => handleArchive(item)}
+                        className="p-2 rounded-xl text-[#A82B35] bg-[#FDF2F3] active:bg-[#F8EEF0]"
+                      >
+                        <Archive className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-                          <Link
-                            href={`/ingredientes/${item.id}`}
-                            title="Editar ingrediente"
-                            className="p-2 rounded-lg text-[#C86D7F] hover:text-[#B2586A] hover:bg-[#FDF0F3] transition-colors"
-                          >
-                            <Edit2 className="h-4 w-4" />
-                          </Link>
-
-                          <button
-                            title="Arquivar ingrediente com segurança"
-                            onClick={() => handleArchive(item)}
-                            className="p-2 rounded-lg text-[#A82B35] hover:bg-[#FDF2F3] transition-colors"
-                          >
-                            <Archive className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </td>
+              {/* Desktop Table View (>= md) */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-[#FDFBF9] border-b border-[#EFE4E6] text-[11px] font-semibold text-[#7C6970] uppercase tracking-wider">
+                    <tr>
+                      <th className="py-3 px-4">Ingrediente</th>
+                      <th className="py-3 px-4">Categoria</th>
+                      <th className="py-3 px-4">Embalagem Comprada</th>
+                      <th className="py-3 px-4">Preço da Compra</th>
+                      <th className="py-3 px-4">Custo Base Calculado</th>
+                      <th className="py-3 px-4 text-right">Ações</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-[#F5ECED]">
+                    {filtered.map((item) => (
+                      <tr
+                        key={item.id}
+                        className="hover:bg-[#FDFBF9]/80 transition-colors"
+                      >
+                        <td className="py-3.5 px-4 font-medium text-[#2E2226]">
+                          <div>
+                            <span className="font-semibold">{item.name}</span>
+                            {item.brand && (
+                              <span className="block text-xs text-[#8C7A82]">
+                                Marca: {item.brand}
+                              </span>
+                            )}
+                          </div>
+                        </td>
+
+                        <td className="py-3.5 px-4">
+                          <Badge variant="secondary" className="capitalize text-[11px]">
+                            {categoryLabels[item.category] || item.category}
+                          </Badge>
+                        </td>
+
+                        <td className="py-3.5 px-4 text-[#4A2832] font-medium">
+                          {formatQuantity(item.package_quantity)}{' '}
+                          {item.package_unit}
+                        </td>
+
+                        <td className="py-3.5 px-4 font-semibold text-[#2E2226]">
+                          {formatCurrency(item.package_price)}
+                        </td>
+
+                        <td className="py-3.5 px-4">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-[#FDF0F3] text-[#8A3E50] font-mono font-semibold text-xs border border-[#F7D8DF]">
+                            {formatUnitCost(item.cost_per_base_unit, item.base_unit)}
+                          </span>
+                        </td>
+
+                        <td className="py-3.5 px-4 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              title="Histórico de alterações de preço"
+                              onClick={() => openHistory(item)}
+                              className="p-2 rounded-lg text-[#7C6970] hover:text-[#4A2832] hover:bg-[#F8EEF0] transition-colors"
+                            >
+                              <History className="h-4 w-4" />
+                            </button>
+
+                            <Link
+                              href={`/ingredientes/${item.id}`}
+                              title="Editar ingrediente"
+                              className="p-2 rounded-lg text-[#C86D7F] hover:text-[#B2586A] hover:bg-[#FDF0F3] transition-colors"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </Link>
+
+                            <button
+                              title="Arquivar ingrediente com segurança"
+                              onClick={() => handleArchive(item)}
+                              className="p-2 rounded-lg text-[#A82B35] hover:bg-[#FDF2F3] transition-colors"
+                            >
+                              <Archive className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
         </Card>
 

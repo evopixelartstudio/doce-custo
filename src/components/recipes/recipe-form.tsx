@@ -473,10 +473,12 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                 </label>
                 <Input
                   type="number"
+                  inputMode="decimal"
                   step="any"
                   placeholder="Ex: 15"
                   value={yieldQuantity}
                   onChange={(e) => setYieldQuantity(e.target.value)}
+                  className="h-11 text-base sm:text-sm font-medium"
                   required
                 />
               </div>
@@ -649,48 +651,51 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                       </div>
 
                       {/* Quantity & Unit Inputs */}
-                      <div className="flex items-center gap-2">
-                        <Input
-                          type="number"
-                          step="any"
-                          placeholder="Qtd"
-                          value={item.quantity}
-                          onChange={(e) =>
-                            updateItem(index, { quantity: e.target.value })
-                          }
-                          className="w-24 h-10 text-xs font-mono"
-                        />
+                      <div className="flex items-center justify-between sm:justify-start gap-2 w-full sm:w-auto">
+                        <div className="flex items-center gap-2 flex-1 sm:flex-initial">
+                          <Input
+                            type="number"
+                            inputMode="decimal"
+                            step="any"
+                            placeholder="Qtd"
+                            value={item.quantity}
+                            onChange={(e) =>
+                              updateItem(index, { quantity: e.target.value })
+                            }
+                            className="w-full sm:w-24 h-11 sm:h-10 text-sm font-mono"
+                          />
 
-                        <select
-                          value={item.unit}
-                          onChange={(e) =>
-                            updateItem(index, {
-                              unit: e.target.value as UnitType,
-                            })
-                          }
-                          className="h-10 rounded-xl border border-[#EFE4E6] bg-white px-2.5 text-xs text-[#2E2226] focus:border-[#C86D7F] focus:outline-none"
-                        >
-                          {availableUnits.map((u) => (
-                            <option key={u.value} value={u.value}>
-                              {u.value}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                          <select
+                            value={item.unit}
+                            onChange={(e) =>
+                              updateItem(index, {
+                                unit: e.target.value as UnitType,
+                              })
+                            }
+                            className="h-11 sm:h-10 rounded-xl border border-[#EFE4E6] bg-white px-2.5 text-sm text-[#2E2226] focus:border-[#C86D7F] focus:outline-none min-w-[65px]"
+                          >
+                            {availableUnits.map((u) => (
+                              <option key={u.value} value={u.value}>
+                                {u.value}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
 
-                      {/* Calculated Cost Display */}
-                      <div className="flex items-center justify-between sm:justify-end gap-3 min-w-[110px]">
-                        <span className="font-mono text-xs font-bold text-[#4A2832]">
-                          {formatCurrency(calculatedCost)}
-                        </span>
+                        {/* Calculated Cost Display & Delete */}
+                        <div className="flex items-center justify-end gap-2.5 min-w-[95px] shrink-0">
+                          <span className="font-mono text-sm font-bold text-[#4A2832]">
+                            {formatCurrency(calculatedCost)}
+                          </span>
 
-                        <button
-                          type="button"
-                          onClick={() => removeItem(index)}
-                          className="p-1.5 rounded-lg text-[#968289] hover:text-[#C44D56] hover:bg-[#FDF2F3] transition-colors"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                          <button
+                            type="button"
+                            onClick={() => removeItem(index)}
+                            className="p-2 sm:p-1.5 rounded-xl text-[#968289] hover:text-[#C44D56] hover:bg-[#FDF2F3] active:bg-[#FDF2F3] transition-colors"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   );
@@ -761,13 +766,14 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                         <span className="text-xs text-[#7C6970]">R$</span>
                         <Input
                           type="number"
+                          inputMode="decimal"
                           step="0.01"
                           placeholder="0.00"
                           value={ac.amount}
                           onChange={(e) =>
                             updateAdditionalCost(idx, { amount: e.target.value })
                           }
-                          className="w-24 h-9 text-xs font-mono"
+                          className="w-24 h-10 sm:h-9 text-sm sm:text-xs font-mono"
                         />
                       </div>
 
@@ -1033,13 +1039,13 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
         </Card>
 
         {/* Form Actions */}
-        <div className="flex items-center justify-end gap-3 pt-4">
-          <Link href="/receitas">
-            <Button type="button" variant="outline">
+        <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4">
+          <Link href="/receitas" className="w-full sm:w-auto">
+            <Button type="button" variant="outline" className="w-full sm:w-auto h-12 sm:h-10 text-sm font-medium">
               Cancelar
             </Button>
           </Link>
-          <Button type="submit" disabled={loading} className="font-semibold shadow-sm">
+          <Button type="submit" disabled={loading} className="w-full sm:w-auto h-12 sm:h-10 font-semibold shadow-sm text-sm">
             <Save className="h-4 w-4 mr-1.5" />
             {loading ? 'Salvando...' : 'Salvar Receita & Ficha Técnica'}
           </Button>

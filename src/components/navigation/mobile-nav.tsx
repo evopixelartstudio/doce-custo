@@ -58,7 +58,10 @@ export function MobileNav() {
       </header>
 
       {/* Bottom Thumb Navigation Bar */}
-      <nav className="no-print md:hidden fixed bottom-0 left-0 right-0 z-30 border-t border-[#EFE4E6] bg-[#FDFBF9]/95 backdrop-blur-md px-3 py-1.5 flex items-center justify-around pb-safe">
+      <nav
+        className="no-print md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-[#EFE4E6] bg-[#FDFBF9]/95 backdrop-blur-md px-2 pt-2 flex items-center justify-around shadow-lg shadow-black/5"
+        style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 10px)' }}
+      >
         {mobileNavItems.map((item) => {
           const isActive =
             item.href === '/dashboard'
@@ -71,21 +74,21 @@ export function MobileNav() {
               key={item.name}
               href={item.href}
               className={cn(
-                'flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all',
+                'flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all min-w-[56px] min-h-[48px] active:scale-95',
                 isActive
-                  ? 'text-[#4A2832] font-semibold'
+                  ? 'text-[#C86D7F] font-bold'
                   : 'text-[#7C6970] hover:text-[#4A2832]'
               )}
             >
               <div
                 className={cn(
-                  'p-1 rounded-lg transition-colors',
-                  isActive ? 'bg-[#FDF0F3] text-[#C86D7F]' : ''
+                  'p-1.5 rounded-xl transition-all',
+                  isActive ? 'bg-[#FDF0F3] text-[#C86D7F] scale-110 shadow-sm' : 'text-[#7C6970]'
                 )}
               >
                 <Icon className="h-5 w-5" />
               </div>
-              <span className="text-[10px] mt-0.5">{item.name}</span>
+              <span className="text-[10px] tracking-tight mt-0.5">{item.name}</span>
             </Link>
           );
         })}

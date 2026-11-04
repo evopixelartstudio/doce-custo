@@ -125,9 +125,9 @@ function FichaTecnicaContent({
           </div>
         </div>
 
-        <div className="flex items-center flex-wrap gap-2">
-          <Link href={`/simulador?recipeId=${recipe.id}`}>
-            <Button variant="outline" size="sm" className="font-medium">
+        <div className="flex items-center flex-wrap gap-2 w-full sm:w-auto">
+          <Link href={`/simulador?recipeId=${recipe.id}`} className="flex-1 sm:flex-initial">
+            <Button variant="outline" size="sm" className="font-medium w-full sm:w-auto h-10 sm:h-9 text-xs sm:text-sm">
               <Calculator className="h-4 w-4 mr-1 text-[#C86D7F]" />
               Simular Lote
             </Button>
@@ -137,20 +137,20 @@ function FichaTecnicaContent({
             variant="outline"
             size="sm"
             onClick={handleDuplicate}
-            className="font-medium"
+            className="font-medium flex-1 sm:flex-initial h-10 sm:h-9 text-xs sm:text-sm"
           >
             <Copy className="h-4 w-4 mr-1" />
             Duplicar
           </Button>
 
-          <Link href={`/receitas/${recipe.id}/editar`}>
-            <Button variant="outline" size="sm" className="font-medium">
+          <Link href={`/receitas/${recipe.id}/editar`} className="flex-1 sm:flex-initial">
+            <Button variant="outline" size="sm" className="font-medium w-full sm:w-auto h-10 sm:h-9 text-xs sm:text-sm">
               <Edit2 className="h-4 w-4 mr-1" />
               Editar
             </Button>
           </Link>
 
-          <Button size="sm" onClick={handlePrint} className="font-medium shadow-sm">
+          <Button size="sm" onClick={handlePrint} className="font-medium shadow-sm w-full sm:w-auto h-10 sm:h-9 text-xs sm:text-sm">
             <Printer className="h-4 w-4 mr-1" />
             Imprimir A4
           </Button>

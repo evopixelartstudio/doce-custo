@@ -102,16 +102,16 @@ export default function ReceitasPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Link href="/simulador">
-              <Button variant="outline" className="shadow-sm">
-                <Calculator className="h-4 w-4 mr-1.5 text-[#C86D7F]" />
-                Simulador de Fornada
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
+            <Link href="/simulador" className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full h-11 sm:h-9 text-xs sm:text-sm font-medium justify-center shadow-sm">
+                <Calculator className="h-4 w-4 mr-1 text-[#C86D7F]" />
+                Simulador
               </Button>
             </Link>
-            <Link href="/receitas/nova">
-              <Button className="shadow-sm">
-                <Plus className="h-4 w-4 mr-1.5" />
+            <Link href="/receitas/nova" className="w-full sm:w-auto">
+              <Button className="w-full h-11 sm:h-9 text-xs sm:text-sm font-semibold justify-center shadow-sm">
+                <Plus className="h-4 w-4 mr-1" />
                 Criar Receita
               </Button>
             </Link>
