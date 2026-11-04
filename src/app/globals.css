@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FAF8F5;
+  --foreground: #232C27;
+  --card: #FFFFFF;
+  --card-foreground: #232C27;
+  --popover: #FFFFFF;
+  --popover-foreground: #232C27;
+  --primary: #6D8576;
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #5B7264;
+  --primary-light: #F0F5F2;
+  --title: #35483E;
+  --secondary: #F0ECE4;
+  --secondary-foreground: #35483E;
+  --muted: #F2EFEA;
+  --muted-foreground: #69766F;
+  --accent: #E8F0EB;
+  --accent-foreground: #283B31;
+  --destructive: #C85A54;
+  --destructive-foreground: #FFFFFF;
+  --border: #E6E1D8;
+  --input: #E6E1D8;
+  --ring: #6D8576;
+  --radius: 0.75rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
+  --color-title: var(--title);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D7D2C8;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #BAB4A9;
+}
+
+/* Print layout for A4 technical sheet */
+@media print {
+  body {
+    background-color: #FFFFFF !important;
+    color: #111111 !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .print-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 1.5cm;
+  }
 }
