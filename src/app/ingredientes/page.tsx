@@ -203,19 +203,19 @@ export default function IngredientesPage() {
 
                     <div className="grid grid-cols-2 gap-2 text-xs bg-[#FDFBF9] p-3 rounded-xl border border-[#F0E6E8]">
                       <div>
-                        <span className="text-[#8C7A82] block">Embalagem:</span>
+                        <span className="text-[#8C7A82] block">Qtd. Referência:</span>
                         <span className="font-medium text-[#4A2832]">
                           {formatQuantity(item.package_quantity)} {item.package_unit}
                         </span>
                       </div>
                       <div>
-                        <span className="text-[#8C7A82] block">Preço Pago:</span>
+                        <span className="text-[#8C7A82] block">Preço de Referência:</span>
                         <span className="font-bold text-[#2E2226]">
                           {formatCurrency(item.package_price)}
                         </span>
                       </div>
                       <div className="col-span-2 pt-1 border-t border-[#F5ECED] flex items-center justify-between">
-                        <span className="text-[#8A3E50] font-medium">Custo Unitário:</span>
+                        <span className="text-[#8A3E50] font-medium">Custo Unitário Base:</span>
                         <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-[#FDF0F3] text-[#8A3E50] font-mono font-bold text-xs">
                           {formatUnitCost(item.cost_per_base_unit, item.base_unit)}
                         </span>
@@ -255,8 +255,8 @@ export default function IngredientesPage() {
                     <tr>
                       <th className="py-3 px-4">Ingrediente</th>
                       <th className="py-3 px-4">Categoria</th>
-                      <th className="py-3 px-4">Embalagem Comprada</th>
-                      <th className="py-3 px-4">Preço da Compra</th>
+                      <th className="py-3 px-4">Qtd. Referência</th>
+                      <th className="py-3 px-4">Preço de Referência</th>
                       <th className="py-3 px-4">Custo Base Calculado</th>
                       <th className="py-3 px-4 text-right">Ações</th>
                     </tr>

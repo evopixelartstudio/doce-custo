@@ -183,10 +183,50 @@ export function calculateBaseUnitCost(
 }
 
 /**
- * Calculates the cost of an ingredient item in a recipe without intermediate rounding.
+ * Retorna as unidades compatíveis para utilização em receitas:
+ * - unidade -> somente 'unidade' (quantidades inteiras)
+ * - kg ou g -> somente 'g' e 'kg'
+ * - L ou ml -> somente 'ml' e 'L'
+ */
+export function getCompatibleRecipeUnits(refUnit: UnitType): UnitType[] {
+  switch (refUnit) {
+    case 'unidade':
+      return ['unidade'];
+    case 'kg':
+    case 'g':
+      return ['g', 'kg'];
+    case 'L':
+    case 'ml':
+      return ['ml', 'L'];
+    default:
+      return [refUnit];
+  }
+}
+
+/**
+ * Normaliza o nome do ingrediente para comparação sem duplicatas
+ * Remove espaços extras no início/fim e compara em minúsculas
+ */
+export function normalizeIngredientName(name: string): string {
+  return name.trim().toLowerCase();
+}
+
+/**
+ * Calcula o custo proporcional de um ingrediente na receita de acordo com a fórmula geral:
+ * Custo utilizado = (Quantidade utilizada convertida para a mesma unidade de referência / Quantidade de referência cadastrada) × Preço cadastrado.
+ *
+ * Regras obrigatórias:
+ * - Ingredientes cadastrados como unidade devem utilizar somente quantidades inteiras: 1, 2, 3, 4 etc.
+ * - Ingredientes cadastrados em kg podem ser utilizados em kg ou g.
+ * - Ingredientes cadastrados em L podem ser utilizados em L ou ml.
+ * - Ingredientes cadastrados em g podem ser utilizados em g ou kg.
+ * - Ingredientes cadastrados em ml podem ser utilizados em ml ou L.
+ * - Não converter unidade em gramas ou mililitros.
+ * - Não converter peso em volume automaticamente.
  */
 export function calculateIngredientItemCost(
-  ingredient: Pick<Ingredient, 'cost_per_base_unit' | 'base_unit' | 'density_g_per_ml' | 'unit_weight_g'>,
+  ingredient: Pick<Ingredient, 'cost_per_base_unit' | 'base_unit'> &
+    Partial<Pick<Ingredient, 'package_price' | 'package_quantity' | 'package_unit'>>,
   quantityUsed: number | Decimal,
   unitUsed: UnitType
 ): Decimal {
@@ -198,13 +238,73 @@ export function calculateIngredientItemCost(
     return new Decimal(0);
   }
 
-  const convertedQuantityInBaseUnit = convertUnit(qty, unitUsed, ingredient.base_unit, {
-    density_g_per_ml: ingredient.density_g_per_ml,
-    unit_weight_g: ingredient.unit_weight_g,
-  });
+  const refUnit = ingredient.package_unit || (ingredient as any).base_unit;
 
-  const costPerBaseUnit = new Decimal(ingredient.cost_per_base_unit);
-  return convertedQuantityInBaseUnit.times(costPerBaseUnit);
+  // Regra 1: Ingredientes em unidade devem utilizar somente quantidades inteiras e unidade
+  if (refUnit === 'unidade') {
+    if (unitUsed !== 'unidade') {
+      throw new UnitConversionError(
+        'Ingrediente em unidade só pode ser utilizado na unidade "unidade". Não é permitido converter em peso ou volume.'
+      );
+    }
+    if (!qty.isInteger()) {
+      throw new CalculationValidationError(
+        'Ingredientes cadastrados como unidade devem utilizar somente quantidades inteiras (1, 2, 3, 4 etc).'
+      );
+    }
+  }
+
+  // Regra 2: Peso (kg, g)
+  if (refUnit === 'kg' || refUnit === 'g') {
+    if (unitUsed !== 'g' && unitUsed !== 'kg') {
+      throw new UnitConversionError(
+        `Ingrediente em peso (${refUnit}) só pode ser utilizado em gramas (g) ou quilogramas (kg).`
+      );
+    }
+  }
+
+  // Regra 3: Volume (L, ml)
+  if (refUnit === 'L' || refUnit === 'ml') {
+    if (unitUsed !== 'ml' && unitUsed !== 'L') {
+      throw new UnitConversionError(
+        `Ingrediente em volume (${refUnit}) só pode ser utilizado em mililitros (ml) ou litros (L).`
+      );
+    }
+  }
+
+  // Converter a quantidade utilizada para a mesma unidade de referência
+  let qtyInRefUnit: Decimal;
+  if (unitUsed === refUnit) {
+    qtyInRefUnit = qty;
+  } else if (unitUsed === 'g' && refUnit === 'kg') {
+    qtyInRefUnit = qty.dividedBy(1000);
+  } else if (unitUsed === 'kg' && refUnit === 'g') {
+    qtyInRefUnit = qty.times(1000);
+  } else if (unitUsed === 'ml' && refUnit === 'L') {
+    qtyInRefUnit = qty.dividedBy(1000);
+  } else if (unitUsed === 'L' && refUnit === 'ml') {
+    qtyInRefUnit = qty.times(1000);
+  } else {
+    throw new UnitConversionError(`Conversão incompatível entre ${unitUsed} e ${refUnit}.`);
+  }
+
+  const refQty =
+    ingredient.package_quantity !== undefined
+      ? new Decimal(ingredient.package_quantity)
+      : new Decimal(1);
+  const refPrice =
+    ingredient.package_price !== undefined
+      ? new Decimal(ingredient.package_price)
+      : new Decimal((ingredient as any).cost_per_base_unit || 0);
+
+  if (refQty.isZero() || refQty.isNegative()) {
+    throw new CalculationValidationError(
+      'A quantidade de referência do ingrediente deve ser maior que zero.'
+    );
+  }
+
+  // Fórmula geral: (Quantidade utilizada convertida / Quantidade de referência cadastrada) × Preço cadastrado
+  return qtyInRefUnit.dividedBy(refQty).times(refPrice);
 }
 
 /**

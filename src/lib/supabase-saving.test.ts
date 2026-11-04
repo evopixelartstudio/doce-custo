@@ -10,7 +10,7 @@ describe('Supabase - Teste Real de Leitura e Gravação (Sem Login)', () => {
   it('salva, consulta, atualiza e exclui um ingrediente com sucesso', async () => {
     // 1. Inserir ingrediente
     const testIngredient = {
-      name: 'Farinha Teste Supabase',
+      name: `Farinha Teste Supabase ${Date.now()}`,
       category: 'farinaceos',
       package_quantity: 1,
       package_unit: 'kg',
@@ -31,7 +31,7 @@ describe('Supabase - Teste Real de Leitura e Gravação (Sem Login)', () => {
     expect(insertErr).toBeNull();
     expect(inserted).toBeDefined();
     expect(inserted.id).toBeDefined();
-    expect(inserted.name).toBe('Farinha Teste Supabase');
+    expect(inserted.name).toBe(testIngredient.name);
 
     const ingredientId = inserted.id;
 
@@ -57,10 +57,11 @@ describe('Supabase - Teste Real de Leitura e Gravação (Sem Login)', () => {
 
   it('salva uma receita completa com itens e custos adicionais e consulta com sucesso', async () => {
     // 1. Criar um ingrediente base para a receita
+    const testIngName = `Ovo Teste Receita ${Date.now()}`;
     const { data: ing, error: ingErr } = await supabase
       .from('ingredients')
       .insert({
-        name: 'Ovo Teste Receita',
+        name: testIngName,
         category: 'ovos',
         package_quantity: 12,
         package_unit: 'unidade',

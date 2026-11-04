@@ -32,11 +32,11 @@ const categories: { value: IngredientCategory; label: string }[] = [
 ];
 
 const unitOptions: { value: UnitType; label: string }[] = [
-  { value: 'g', label: 'Gramas (g)' },
-  { value: 'kg', label: 'Quilogramas (kg)' },
-  { value: 'ml', label: 'Mililitros (ml)' },
-  { value: 'L', label: 'Litros (L)' },
-  { value: 'unidade', label: 'Unidades (un)' },
+  { value: 'unidade', label: 'Unidade (un)' },
+  { value: 'g', label: 'Grama (g)' },
+  { value: 'kg', label: 'Quilograma (kg)' },
+  { value: 'ml', label: 'Mililitro (ml)' },
+  { value: 'L', label: 'Litro (L)' },
 ];
 
 export function IngredientForm({ initialData }: IngredientFormProps) {
@@ -48,25 +48,19 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
     initialData?.category || 'laticinios'
   );
   const [packageQuantity, setPackageQuantity] = useState<string>(
-    initialData ? String(initialData.package_quantity) : ''
+    initialData ? String(initialData.package_quantity) : '1'
   );
   const [packageUnit, setPackageUnit] = useState<UnitType>(
-    initialData?.package_unit || 'g'
+    initialData?.package_unit || 'unidade'
   );
   const [packagePrice, setPackagePrice] = useState<string>(
     initialData ? String(initialData.package_price) : ''
   );
   const [brand, setBrand] = useState(initialData?.brand || '');
   const [notes, setNotes] = useState(initialData?.notes || '');
-  const [densityGPerMl, setDensityGPerMl] = useState<string>(
-    initialData?.density_g_per_ml ? String(initialData.density_g_per_ml) : ''
-  );
-  const [unitWeightG, setUnitWeightG] = useState<string>(
-    initialData?.unit_weight_g ? String(initialData.unit_weight_g) : ''
-  );
 
   // Live calculation of base unit and cost
-  let calculatedBaseUnit: BaseUnit = 'g';
+  let calculatedBaseUnit: BaseUnit = 'unidade';
   let liveBaseUnitCost: number | null = null;
 
   try {
@@ -88,19 +82,24 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
+    const cleanName = name.trim();
     const numQty = parseFloat(packageQuantity.replace(',', '.'));
     const numPrice = parseFloat(packagePrice.replace(',', '.'));
 
-    if (!name.trim()) {
+    if (!cleanName) {
       toast.error('Informe o nome do ingrediente.');
       return;
     }
     if (isNaN(numQty) || numQty <= 0) {
-      toast.error('Informe uma quantidade comprada válida maior que zero.');
+      toast.error('Informe uma quantidade de referência válida maior que zero.');
+      return;
+    }
+    if (packageUnit === 'unidade' && !Number.isInteger(numQty)) {
+      toast.error('Ingredientes em unidade devem utilizar quantidade de referência inteira (1, 2, 3...).');
       return;
     }
     if (isNaN(numPrice) || numPrice < 0) {
-      toast.error('Informe um preço de compra válido.');
+      toast.error('Informe um preço de referência válido.');
       return;
     }
 
@@ -110,7 +109,7 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
 
       await saveIngredient({
         ...(initialData ? { id: initialData.id } : {}),
-        name: name.trim(),
+        name: cleanName,
         category,
         package_quantity: numQty,
         package_unit: packageUnit,
@@ -118,18 +117,12 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
         base_unit: baseUnit,
         brand: brand.trim() || null,
         notes: notes.trim() || null,
-        density_g_per_ml: densityGPerMl
-          ? parseFloat(densityGPerMl.replace(',', '.'))
-          : null,
-        unit_weight_g: unitWeightG
-          ? parseFloat(unitWeightG.replace(',', '.'))
-          : null,
       });
 
       toast.success(
         initialData
-          ? 'Ingrediente atualizado! Receitas recalculadas com o novo preço.'
-          : 'Ingrediente cadastrado com sucesso!'
+          ? 'Ingrediente atualizado! Todas as receitas foram recalculadas automaticamente.'
+          : 'Ingrediente cadastrado no catálogo com sucesso!'
       );
       router.push('/ingredientes');
       router.refresh();
@@ -217,14 +210,14 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
           </CardContent>
         </Card>
 
-        {/* Embalagem e Preço da Compra */}
+        {/* Referência de Compra e Preço */}
         <Card className="border-[#EFE4E6] bg-white">
           <CardHeader className="pb-4">
             <CardTitle className="text-base text-[#4A2832]">
-              Embalagem e Preço da Compra
+              Referência de Compra e Preço
             </CardTitle>
             <CardDescription className="text-xs text-[#7C6970]">
-              Informe a quantidade líquida descrita na embalagem e o valor total que pagou.
+              Informe a quantidade de referência e o preço correspondente. Representa apenas o catálogo de custos.
             </CardDescription>
           </CardHeader>
 
@@ -232,13 +225,13 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-[#5E4850]">
-                  Quantidade Comprada *
+                  Quantidade de Referência *
                 </label>
                 <Input
                   type="number"
                   inputMode="decimal"
                   step="any"
-                  placeholder="Ex: 200, 1, 500..."
+                  placeholder="Ex: 1, 200, 500..."
                   value={packageQuantity}
                   onChange={(e) => setPackageQuantity(e.target.value)}
                   className="h-11 text-base sm:text-sm font-medium"
@@ -248,7 +241,7 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
 
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-[#5E4850]">
-                  Unidade de Compra *
+                  Unidade de Referência *
                 </label>
                 <select
                   value={packageUnit}
@@ -265,7 +258,7 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
 
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-[#5E4850]">
-                  Preço Total Pago (R$) *
+                  Preço Correspondente (R$) *
                 </label>
                 <Input
                   type="number"
@@ -288,7 +281,7 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
                 </div>
                 <div>
                   <p className="text-xs font-medium text-[#8A3E50]">
-                    Custo Unitário Calculado
+                    Custo por Unidade Base
                   </p>
                   <p className="text-lg font-bold font-mono text-[#4A2832]">
                     {liveBaseUnitCost !== null
@@ -299,69 +292,21 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
               </div>
 
               <div className="text-left sm:text-right text-xs text-[#7C6970]">
-                <span>Unidade-base interna: </span>
+                <span>Unidade calculada: </span>
                 <strong className="text-[#4A2832]">{calculatedBaseUnit}</strong>
                 <p className="text-[11px] text-[#968289]">
-                  Sem arredondamentos prematuros
+                  Cálculo automático proporcional para receitas
                 </p>
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Informações Avançadas (Opcionais) */}
-        <Card className="border-[#EFE4E6] bg-white">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-[#4A2832]">
-              Conversões Especiais (Opcional)
-            </CardTitle>
-            <CardDescription className="text-xs text-[#7C6970]">
-              Configure apenas se quiser que receitas convertam gramas em ml ou peças em peso para este ingrediente.
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#5E4850]">
-                  Densidade (g/ml)
-                </label>
-                <Input
-                  type="number"
-                  step="0.001"
-                  placeholder="Ex: 1.03 para leite integral"
-                  value={densityGPerMl}
-                  onChange={(e) => setDensityGPerMl(e.target.value)}
-                />
-                <span className="text-[11px] text-[#8C7A82]">
-                  Permite usar gramas em líquidos na receita.
-                </span>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#5E4850]">
-                  Peso por Unidade (g)
-                </label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  placeholder="Ex: 50 para ovo médio"
-                  value={unitWeightG}
-                  onChange={(e) => setUnitWeightG(e.target.value)}
-                />
-                <span className="text-[11px] text-[#8C7A82]">
-                  Permite converter unidades em gramas.
-                </span>
-              </div>
-            </div>
-
-            <div className="space-y-1.5 pt-2">
+            <div className="space-y-1.5 pt-1">
               <label className="text-xs font-semibold text-[#5E4850]">
-                Observações Culinárias
+                Observações (Opcional)
               </label>
               <textarea
                 rows={2}
-                placeholder="Ex: Guardar em local refrigerado após abrir, fornecedor X..."
+                placeholder="Ex: Fornecedor, especificações do produto..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 className="w-full rounded-xl border border-[#EFE4E6] bg-white p-3 text-sm text-[#2E2226] focus:border-[#C86D7F] focus:outline-none focus:ring-2 focus:ring-[#C86D7F]/20"

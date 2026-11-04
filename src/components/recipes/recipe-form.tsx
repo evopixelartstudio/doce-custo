@@ -12,6 +12,7 @@ import {
   DollarSign,
   AlertTriangle,
   Clock,
+  Search,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -38,6 +39,8 @@ import {
   calculateSubRecipeItemCost,
   calculateRecipePricing,
   formatCurrency,
+  formatQuantity,
+  getCompatibleRecipeUnits,
 } from '@/lib/calculations';
 import Decimal from 'decimal.js';
 import { toast } from 'sonner';
@@ -100,6 +103,9 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
   const [manualSalePrice, setManualSalePrice] = useState<string>(
     initialData?.manual_sale_price ? String(initialData.manual_sale_price) : ''
   );
+
+  // Search input for quick ingredient addition
+  const [ingredientSearch, setIngredientSearch] = useState('');
 
   // Items (ingredients & sub-recipes)
   const [items, setItems] = useState<
@@ -243,14 +249,35 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
   // Item management handlers
   function addIngredientItem() {
     const firstIng = allIngredients[0];
+    const defaultUnit = firstIng
+      ? getCompatibleRecipeUnits(firstIng.package_unit)[0]
+      : 'g';
+    const defaultQty = firstIng?.package_unit === 'unidade' ? '1' : '100';
+
     setItems((prev) => [
       ...prev,
       {
         item_type: 'ingredient',
         ingredient_id: firstIng?.id || '',
         sub_recipe_id: '',
-        quantity: '100',
-        unit: firstIng?.base_unit || 'g',
+        quantity: defaultQty,
+        unit: defaultUnit,
+      },
+    ]);
+  }
+
+  function addSpecificIngredient(ing: Ingredient) {
+    const defaultUnit = getCompatibleRecipeUnits(ing.package_unit)[0];
+    const defaultQty = ing.package_unit === 'unidade' ? '1' : '100';
+
+    setItems((prev) => [
+      ...prev,
+      {
+        item_type: 'ingredient',
+        ingredient_id: ing.id,
+        sub_recipe_id: '',
+        quantity: defaultQty,
+        unit: defaultUnit,
       },
     ]);
   }
@@ -280,7 +307,13 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
       if (patch.ingredient_id) {
         const ing = ingredientMap.get(patch.ingredient_id);
         if (ing) {
-          copy[index].unit = ing.base_unit;
+          const compatible = getCompatibleRecipeUnits(ing.package_unit);
+          if (!compatible.includes(copy[index].unit)) {
+            copy[index].unit = compatible[0];
+          }
+          if (ing.package_unit === 'unidade') {
+            copy[index].quantity = Math.max(1, Math.round(parseFloat(copy[index].quantity) || 1)).toString();
+          }
         }
       }
       return copy;
@@ -332,9 +365,18 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
         toast.error('Informe quantidades válidas maiores que zero em todos os itens.');
         return;
       }
-      if (item.item_type === 'ingredient' && !item.ingredient_id) {
-        toast.error('Selecione um ingrediente para todos os itens da receita.');
-        return;
+      if (item.item_type === 'ingredient') {
+        if (!item.ingredient_id) {
+          toast.error('Selecione um ingrediente para todos os itens da receita.');
+          return;
+        }
+        const ing = ingredientMap.get(item.ingredient_id);
+        if (ing?.package_unit === 'unidade' && !Number.isInteger(q)) {
+          toast.error(
+            `O ingrediente "${ing.name}" foi cadastrado como unidade e aceita somente quantidades inteiras (1, 2, 3, 4...).`
+          );
+          return;
+        }
       }
       if (item.item_type === 'sub_recipe' && !item.sub_recipe_id) {
         toast.error('Selecione uma sub-receita válida.');
@@ -564,7 +606,54 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
             </div>
           </CardHeader>
 
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
+            {/* Quick Search and Add Ingredient Bar */}
+            <div className="relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A8989E]" />
+              <Input
+                type="text"
+                placeholder="Pesquisar e adicionar ingrediente rápido..."
+                value={ingredientSearch}
+                onChange={(e) => setIngredientSearch(e.target.value)}
+                className="pl-10 h-11 text-sm bg-[#FDFBF9]"
+              />
+              {ingredientSearch.trim() && (
+                <div className="absolute left-0 right-0 top-12 z-30 bg-white border border-[#EFE4E6] rounded-2xl shadow-xl max-h-56 overflow-y-auto p-1.5 space-y-1">
+                  {allIngredients
+                    .filter((ing) => {
+                      const term = ingredientSearch.trim().toLowerCase();
+                      return (
+                        ing.name.toLowerCase().includes(term) ||
+                        (ing.brand && ing.brand.toLowerCase().includes(term))
+                      );
+                    })
+                    .map((ing) => (
+                      <button
+                        key={ing.id}
+                        type="button"
+                        onClick={() => {
+                          addSpecificIngredient(ing);
+                          setIngredientSearch('');
+                        }}
+                        className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-[#FDF0F3] text-left text-xs transition-colors group"
+                      >
+                        <div>
+                          <span className="font-semibold text-[#2E2226] group-hover:text-[#C86D7F]">
+                            {ing.name}
+                          </span>
+                          <span className="text-[#8C7A82] ml-2 font-mono">
+                            ({formatQuantity(ing.package_quantity)} {ing.package_unit} = {formatCurrency(ing.package_price)})
+                          </span>
+                        </div>
+                        <span className="text-[11px] font-semibold text-[#C86D7F] bg-[#FDF0F3] px-2 py-0.5 rounded-md group-hover:bg-[#C86D7F] group-hover:text-white transition-colors">
+                          + Adicionar
+                        </span>
+                      </button>
+                    ))}
+                </div>
+              )}
+            </div>
+
             {items.length === 0 ? (
               <div className="p-8 text-center text-sm text-[#7C6970] border border-dashed border-[#EFE4E6] rounded-2xl space-y-2">
                 <Wheat className="h-8 w-8 text-[#C9B3B8] mx-auto" />
@@ -592,6 +681,10 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
               <div className="space-y-2.5">
                 {items.map((item, index) => {
                   const calculatedCost = calculatedItems[index]?.cost || 0;
+                  const ing = item.ingredient_id ? ingredientMap.get(item.ingredient_id) : undefined;
+                  const compatibleUnits = ing
+                    ? getCompatibleRecipeUnits(ing.package_unit)
+                    : availableUnits.map((u) => u.value);
 
                   return (
                     <div
@@ -614,30 +707,37 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                         </Badge>
                       </div>
 
-                      {/* Item Selector */}
+                      {/* Item Selector & Reference Display */}
                       <div className="flex-1 min-w-0">
                         {item.item_type === 'ingredient' ? (
-                          <select
-                            value={item.ingredient_id}
-                            onChange={(e) =>
-                              updateItem(index, { ingredient_id: e.target.value })
-                            }
-                            className="w-full h-10 rounded-xl border border-[#EFE4E6] bg-white px-3 text-xs text-[#2E2226] font-medium focus:border-[#C86D7F] focus:outline-none"
-                          >
-                            <option value="">Selecione um ingrediente...</option>
-                            {allIngredients.map((ing) => (
-                              <option key={ing.id} value={ing.id}>
-                                {ing.name} ({ing.brand || ing.category})
-                              </option>
-                            ))}
-                          </select>
+                          <div>
+                            <select
+                              value={item.ingredient_id}
+                              onChange={(e) =>
+                                updateItem(index, { ingredient_id: e.target.value })
+                              }
+                              className="w-full h-11 sm:h-10 rounded-xl border border-[#EFE4E6] bg-white px-3 text-sm text-[#2E2226] font-medium focus:border-[#C86D7F] focus:outline-none"
+                            >
+                              <option value="">Selecione um ingrediente...</option>
+                              {allIngredients.map((i) => (
+                                <option key={i.id} value={i.id}>
+                                  {i.name} ({formatQuantity(i.package_quantity)} {i.package_unit} = {formatCurrency(i.package_price)})
+                                </option>
+                              ))}
+                            </select>
+                            {ing && (
+                              <span className="text-[11px] text-[#7C6970] block mt-1">
+                                Cadastrado: <strong>{formatQuantity(ing.package_quantity)} {ing.package_unit}</strong> = <strong>{formatCurrency(ing.package_price)}</strong>
+                              </span>
+                            )}
+                          </div>
                         ) : (
                           <select
                             value={item.sub_recipe_id}
                             onChange={(e) =>
                               updateItem(index, { sub_recipe_id: e.target.value })
                             }
-                            className="w-full h-10 rounded-xl border border-[#EFE4E6] bg-white px-3 text-xs text-[#2E2226] font-medium focus:border-[#C86D7F] focus:outline-none"
+                            className="w-full h-11 sm:h-10 rounded-xl border border-[#EFE4E6] bg-white px-3 text-sm text-[#2E2226] font-medium focus:border-[#C86D7F] focus:outline-none"
                           >
                             <option value="">Selecione uma sub-receita...</option>
                             {allRecipes.map((rec) => (
@@ -655,14 +755,15 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                         <div className="flex items-center gap-2 flex-1 sm:flex-initial">
                           <Input
                             type="number"
-                            inputMode="decimal"
-                            step="any"
+                            inputMode={ing?.package_unit === 'unidade' ? 'numeric' : 'decimal'}
+                            step={ing?.package_unit === 'unidade' ? '1' : 'any'}
+                            min={ing?.package_unit === 'unidade' ? '1' : '0.001'}
                             placeholder="Qtd"
                             value={item.quantity}
                             onChange={(e) =>
                               updateItem(index, { quantity: e.target.value })
                             }
-                            className="w-full sm:w-24 h-11 sm:h-10 text-sm font-mono"
+                            className="w-full sm:w-24 h-11 sm:h-10 text-sm font-mono font-medium"
                           />
 
                           <select
@@ -672,11 +773,11 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                                 unit: e.target.value as UnitType,
                               })
                             }
-                            className="h-11 sm:h-10 rounded-xl border border-[#EFE4E6] bg-white px-2.5 text-sm text-[#2E2226] focus:border-[#C86D7F] focus:outline-none min-w-[65px]"
+                            className="h-11 sm:h-10 rounded-xl border border-[#EFE4E6] bg-white px-2.5 text-sm text-[#2E2226] font-medium focus:border-[#C86D7F] focus:outline-none min-w-[70px]"
                           >
-                            {availableUnits.map((u) => (
-                              <option key={u.value} value={u.value}>
-                                {u.value}
+                            {compatibleUnits.map((u) => (
+                              <option key={u} value={u}>
+                                {u}
                               </option>
                             ))}
                           </select>

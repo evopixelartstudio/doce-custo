@@ -10,6 +10,8 @@ import {
   hasCircularDependency,
   calculateRecipePricing,
   simulateRecipeProduction,
+  normalizeIngredientName,
+  getCompatibleRecipeUnits,
   UnitConversionError,
   CalculationValidationError,
 } from './calculations';
@@ -254,6 +256,152 @@ describe('Cálculos e Conversão de Unidades', () => {
 
     // Total cost = 30 (ingredients) + 15 (prop) + 8 (fixed) = 53
     expect(simulation.newTotalCost).toBe(53);
+  });
+
+  describe('Cenários Obrigatórios do Prompt — Cadastro Simples de Ingredientes', () => {
+    // Cenário 1: Cinco ovos a R$ 1,00 = R$ 5,00
+    it('Cenário 1: Cinco ovos a R$ 1,00 = R$ 5,00', () => {
+      const ovo: Pick<
+        Ingredient,
+        'package_quantity' | 'package_unit' | 'package_price' | 'cost_per_base_unit' | 'base_unit'
+      > = {
+        package_quantity: 1,
+        package_unit: 'unidade',
+        package_price: 1.0,
+        cost_per_base_unit: 1.0,
+        base_unit: 'unidade',
+      };
+
+      const custo = calculateIngredientItemCost(ovo, 5, 'unidade');
+      expect(custo.toNumber()).toBe(5.0);
+    });
+
+    // Cenário 2: Duas caixas de leite condensado a R$ 10,00 = R$ 20,00
+    it('Cenário 2: Duas caixas de leite condensado a R$ 10,00 = R$ 20,00', () => {
+      const leiteCondensado: Pick<
+        Ingredient,
+        'package_quantity' | 'package_unit' | 'package_price' | 'cost_per_base_unit' | 'base_unit'
+      > = {
+        package_quantity: 1,
+        package_unit: 'unidade',
+        package_price: 10.0,
+        cost_per_base_unit: 10.0,
+        base_unit: 'unidade',
+      };
+
+      const custo = calculateIngredientItemCost(leiteCondensado, 2, 'unidade');
+      expect(custo.toNumber()).toBe(20.0);
+    });
+
+    // Cenário 3: 350 ml de chantilly cadastrado como 1 L por R$ 39,00 = R$ 13,65
+    it('Cenário 3: 350 ml de chantilly cadastrado como 1 L por R$ 39,00 = R$ 13,65', () => {
+      const chantilly: Pick<
+        Ingredient,
+        'package_quantity' | 'package_unit' | 'package_price' | 'cost_per_base_unit' | 'base_unit'
+      > = {
+        package_quantity: 1,
+        package_unit: 'L',
+        package_price: 39.0,
+        cost_per_base_unit: 0.039,
+        base_unit: 'ml',
+      };
+
+      const custo = calculateIngredientItemCost(chantilly, 350, 'ml');
+      expect(custo.toNumber()).toBe(13.65);
+    });
+
+    // Cenário 4: 250 g de farinha cadastrada como 1 kg por R$ 6,00 = R$ 1,50
+    it('Cenário 4: 250 g de farinha cadastrada como 1 kg por R$ 6,00 = R$ 1,50', () => {
+      const farinha: Pick<
+        Ingredient,
+        'package_quantity' | 'package_unit' | 'package_price' | 'cost_per_base_unit' | 'base_unit'
+      > = {
+        package_quantity: 1,
+        package_unit: 'kg',
+        package_price: 6.0,
+        cost_per_base_unit: 0.006,
+        base_unit: 'g',
+      };
+
+      const custo = calculateIngredientItemCost(farinha, 250, 'g');
+      expect(custo.toNumber()).toBe(1.5);
+    });
+
+    // Cenário 5: Alteração do preço de um ingrediente recalcula todas as receitas relacionadas
+    it('Cenário 5: Alteração do preço do chantilly (R$ 39 -> R$ 45) recalcula o custo da receita automaticamente', () => {
+      const chantillyOriginal: Pick<
+        Ingredient,
+        'package_quantity' | 'package_unit' | 'package_price' | 'cost_per_base_unit' | 'base_unit'
+      > = {
+        package_quantity: 1,
+        package_unit: 'L',
+        package_price: 39.0,
+        cost_per_base_unit: 0.039,
+        base_unit: 'ml',
+      };
+
+      const custoOriginal = calculateIngredientItemCost(chantillyOriginal, 350, 'ml');
+      expect(custoOriginal.toNumber()).toBe(13.65);
+
+      // Confeiteira atualizou o preço do litro para R$ 45,00:
+      const chantillyAtualizado = {
+        ...chantillyOriginal,
+        package_price: 45.0,
+        cost_per_base_unit: 0.045,
+      };
+
+      // Receita sem sofrer alteração na quantidade utilizada recalcula automaticamente para R$ 15,75
+      const custoAtualizado = calculateIngredientItemCost(chantillyAtualizado, 350, 'ml');
+      expect(custoAtualizado.toNumber()).toBe(15.75);
+    });
+
+    // Cenário 6: Utilizar ingredientes em receitas não altera nenhum dado do cadastro original
+    it('Cenário 6: Utilizar ingredientes em receitas não altera nenhum dado do cadastro original', () => {
+      const ingredienteCadastro: Readonly<
+        Pick<Ingredient, 'package_quantity' | 'package_unit' | 'package_price' | 'cost_per_base_unit' | 'base_unit'>
+      > = Object.freeze({
+        package_quantity: 1,
+        package_unit: 'kg',
+        package_price: 15.0,
+        cost_per_base_unit: 0.015,
+        base_unit: 'g',
+      });
+
+      // Cálculo de uso de 300g
+      const custoUso = calculateIngredientItemCost(ingredienteCadastro, 300, 'g');
+      expect(custoUso.toNumber()).toBe(4.5);
+
+      // Objeto de cadastro permanece intocado
+      expect(ingredienteCadastro.package_quantity).toBe(1);
+      expect(ingredienteCadastro.package_unit).toBe('kg');
+      expect(ingredienteCadastro.package_price).toBe(15.0);
+    });
+
+    it('impede quantidades fracionadas em ingredientes do tipo unidade', () => {
+      const ovo: Pick<
+        Ingredient,
+        'package_quantity' | 'package_unit' | 'package_price' | 'cost_per_base_unit' | 'base_unit'
+      > = {
+        package_quantity: 1,
+        package_unit: 'unidade',
+        package_price: 1.0,
+        cost_per_base_unit: 1.0,
+        base_unit: 'unidade',
+      };
+
+      expect(() => calculateIngredientItemCost(ovo, 2.5, 'unidade')).toThrow(
+        CalculationValidationError
+      );
+      expect(() => calculateIngredientItemCost(ovo, 3, 'g')).toThrow(
+        UnitConversionError
+      );
+    });
+
+    it('identifica duplicações de nomes ignorando maiúsculas e espaços extras', () => {
+      expect(normalizeIngredientName('  Chantilly  ')).toBe('chantilly');
+      expect(normalizeIngredientName('CHANTILLY')).toBe('chantilly');
+      expect(normalizeIngredientName('Ovo ')).toBe(normalizeIngredientName('  ovo'));
+    });
   });
 });
 

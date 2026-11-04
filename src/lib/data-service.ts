@@ -14,6 +14,7 @@ import {
   calculateIngredientItemCost,
   calculateSubRecipeItemCost,
   hasCircularDependency,
+  normalizeIngredientName,
 } from './calculations';
 import {
   INITIAL_INGREDIENTS,
@@ -112,13 +113,33 @@ export async function getIngredientById(id: string): Promise<Ingredient | null> 
 export async function saveIngredient(
   ingredientData: Partial<Ingredient> & {
     name: string;
-    category: any;
+    category?: any;
     package_quantity: number;
     package_unit: any;
     package_price: number;
     base_unit: any;
   }
 ): Promise<Ingredient> {
+  const cleanName = ingredientData.name.trim();
+  if (!cleanName) {
+    throw new Error('Informe o nome do ingrediente.');
+  }
+
+  // Validação obrigatória: impedir duplicações pelo mesmo nome (case-insensitive e espaços)
+  const allIngredients = await getIngredients(true);
+  const normalizedNewName = normalizeIngredientName(cleanName);
+  const duplicate = allIngredients.find(
+    (i) =>
+      i.id !== ingredientData.id &&
+      !i.is_archived &&
+      normalizeIngredientName(i.name) === normalizedNewName
+  );
+  if (duplicate) {
+    throw new Error(
+      `Já existe um ingrediente cadastrado com o nome "${cleanName}".`
+    );
+  }
+
   // Automatically calculate base unit cost
   const baseCost = calculateBaseUnitCost(
     ingredientData.package_price,
@@ -133,6 +154,8 @@ export async function saveIngredient(
     try {
       const payload = {
         ...ingredientData,
+        name: cleanName,
+        category: ingredientData.category || 'outros',
         cost_per_base_unit: baseCost,
         updated_at: now,
       };
@@ -145,21 +168,37 @@ export async function saveIngredient(
           .select()
           .single();
 
-        if (!error && data) {
-          return data as Ingredient;
+        if (error) throw error;
+        if (data) {
+          const saved = data as Ingredient;
+          const list = getLocal<Ingredient[]>(STORAGE_KEY_INGREDIENTS, []);
+          const idx = list.findIndex((i) => i.id === saved.id);
+          if (idx >= 0) list[idx] = saved;
+          else list.push(saved);
+          setLocal(STORAGE_KEY_INGREDIENTS, list);
+          return saved;
         }
       } else {
+        const { id, ...insertPayload } = payload;
         const { data, error } = await supabase
           .from('ingredients')
-          .insert({ ...payload, created_at: now })
+          .insert({ ...insertPayload, created_at: now })
           .select()
           .single();
 
-        if (!error && data) {
-          return data as Ingredient;
+        if (error) throw error;
+        if (data) {
+          const saved = data as Ingredient;
+          const list = getLocal<Ingredient[]>(STORAGE_KEY_INGREDIENTS, []);
+          list.push(saved);
+          setLocal(STORAGE_KEY_INGREDIENTS, list);
+          return saved;
         }
       }
-    } catch (err) {
+    } catch (err: any) {
+      if (err.message && err.message.includes('Já existe um ingrediente')) {
+        throw err;
+      }
       console.warn('Erro ao salvar ingrediente no Supabase, usando local:', err);
     }
   }
@@ -200,6 +239,8 @@ export async function saveIngredient(
     result = {
       ...oldItem,
       ...ingredientData,
+      name: cleanName,
+      category: ingredientData.category || 'outros',
       cost_per_base_unit: baseCost,
       updated_at: now,
     } as Ingredient;
@@ -212,9 +253,11 @@ export async function saveIngredient(
   } else {
     result = {
       id: `ing-${Date.now()}`,
-      user_id: 'confeiteira-admin',
+      user_id: 'default',
       is_archived: false,
       ...ingredientData,
+      name: cleanName,
+      category: ingredientData.category || 'outros',
       cost_per_base_unit: baseCost,
       created_at: now,
       updated_at: now,
