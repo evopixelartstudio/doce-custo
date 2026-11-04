@@ -59,11 +59,14 @@ export interface RecipeItem {
   calculated_cost?: number;
 }
 
+export type AdditionalCostType = 'fixed' | 'percentage';
+
 export interface AdditionalCost {
   id: string;
   recipe_id?: string;
   description: string;
-  amount: number;
+  amount: number; // In fixed: valor em R$. In percentage: percentual (ex: 10 para 10%)
+  cost_type?: AdditionalCostType; // 'fixed' (R$) ou 'percentage' (%)
   is_proportional?: boolean; // if true, scales with simulated yield; if false, fixed per production batch
 }
 

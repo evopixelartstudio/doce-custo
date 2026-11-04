@@ -133,7 +133,7 @@ describe('Supabase - Teste Real de Leitura e Gravação (Sem Login)', () => {
     await supabase.from('recipe_items').delete().eq('recipe_id', rec.id);
     await supabase.from('recipes').delete().eq('id', rec.id);
     await supabase.from('ingredients').delete().eq('id', ing.id);
-  });
+  }, 15000);
 
   it('salva e recupera configurações do usuário com sucesso', async () => {
     const { data: existing } = await supabase

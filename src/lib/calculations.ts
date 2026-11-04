@@ -513,7 +513,12 @@ export function calculateRecipeBreakdown(
   let totalAdditional = new Decimal(0);
   for (const ac of additionalCostsList) {
     if (ac.amount > 0) {
-      totalAdditional = totalAdditional.plus(new Decimal(ac.amount));
+      if (ac.cost_type === 'percentage') {
+        const percValue = ingredientsCost.times(new Decimal(ac.amount).dividedBy(100));
+        totalAdditional = totalAdditional.plus(percValue);
+      } else {
+        totalAdditional = totalAdditional.plus(new Decimal(ac.amount));
+      }
     }
   }
 
@@ -610,10 +615,15 @@ export function simulateRecipeProduction(
   let totalAdditionalCosts = new Decimal(0);
 
   const scaledAdditionalCosts = additionalCosts.map((ac) => {
+    let simulatedAmount = new Decimal(0);
     const originalAmount = new Decimal(ac.amount || 0);
-    // If proportional, scale with multiplier; if fixed batch cost, stay same
-    const isProportional = ac.is_proportional ?? true;
-    const simulatedAmount = isProportional ? originalAmount.times(multiplier) : originalAmount;
+
+    if (ac.cost_type === 'percentage') {
+      simulatedAmount = totalIngredientsCost.times(originalAmount.dividedBy(100));
+    } else {
+      const isProportional = ac.is_proportional ?? true;
+      simulatedAmount = isProportional ? originalAmount.times(multiplier) : originalAmount;
+    }
 
     totalAdditionalCosts = totalAdditionalCosts.plus(simulatedAmount);
 
@@ -621,7 +631,7 @@ export function simulateRecipeProduction(
       description: ac.description,
       originalAmount: originalAmount.toNumber(),
       simulatedAmount: simulatedAmount.toNumber(),
-      isProportional,
+      isProportional: ac.is_proportional ?? true,
     };
   });
 

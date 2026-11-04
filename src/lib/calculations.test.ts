@@ -10,12 +10,13 @@ import {
   hasCircularDependency,
   calculateRecipePricing,
   simulateRecipeProduction,
+  calculateRecipeBreakdown,
   normalizeIngredientName,
   getCompatibleRecipeUnits,
   UnitConversionError,
   CalculationValidationError,
 } from './calculations';
-import type { Ingredient, Recipe, RecipeItem } from './types';
+import type { Ingredient, Recipe, RecipeItem, AdditionalCost } from './types';
 
 describe('Cálculos e Conversão de Unidades', () => {
   it('retorna a unidade base correta', () => {
@@ -401,6 +402,39 @@ describe('Cálculos e Conversão de Unidades', () => {
       expect(normalizeIngredientName('  Chantilly  ')).toBe('chantilly');
       expect(normalizeIngredientName('CHANTILLY')).toBe('chantilly');
       expect(normalizeIngredientName('Ovo ')).toBe(normalizeIngredientName('  ovo'));
+    });
+    it('calcula custos adicionais com opção de porcentagem (gás, energia e mão de obra)', () => {
+      const mockRecipe: Recipe = {
+        id: 'rec-test-perc',
+        user_id: 'user-1',
+        name: 'Bolo Cenoura Especial',
+        category: 'Bolos',
+        yield_quantity: 1,
+        yield_unit: 'unidades',
+        is_archived: false,
+        pricing_method: 'margin',
+        markup_percentage: 0,
+        target_margin_percentage: 50,
+        card_fee_percentage: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      const ingredientsCost = new Decimal(100); // R$ 100 de ingredientes
+      const costs: AdditionalCost[] = [
+        { id: '1', description: 'Gás e energia', amount: 10, cost_type: 'percentage' }, // 10% = R$ 10
+        { id: '2', description: 'Mão de obra', amount: 20, cost_type: 'percentage' },   // 20% = R$ 20
+        { id: '3', description: 'Embalagem', amount: 5, cost_type: 'fixed' },          // R$ 5 fixo
+      ];
+
+      const breakdown = calculateRecipeBreakdown(mockRecipe, ingredientsCost, costs);
+
+      // Total adicionais: 10 + 20 + 5 = 35
+      expect(breakdown.additionalCosts).toBe(35);
+      // Custo total: 100 + 35 = 135
+      expect(breakdown.totalCost).toBe(135);
+      // Preço de venda com margem de 50%: 135 / (1 - 0.5) = 270
+      expect(breakdown.suggestedSalePrice).toBe(270);
     });
   });
 });

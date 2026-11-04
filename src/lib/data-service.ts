@@ -403,9 +403,26 @@ function populateRecipes(
       };
     });
 
+    const additional_costs = (recipe.additional_costs || []).map((ac) => {
+      const match = ac.description.match(/\[(\d+(?:\.\d+)?)%\]/);
+      if (match) {
+        return {
+          ...ac,
+          cost_type: 'percentage' as const,
+          amount: parseFloat(match[1]),
+          description: ac.description.replace(/\s*\[\d+(?:\.\d+)?%\]/, '').trim(),
+        };
+      }
+      return {
+        ...ac,
+        cost_type: ac.cost_type || 'fixed',
+      };
+    });
+
     return {
       ...recipe,
       items,
+      additional_costs,
     };
   });
 }
@@ -534,12 +551,18 @@ export async function saveRecipe(
 
       // Insert additional costs
       if (additionalCostsData.length > 0) {
-        const costsToInsert = additionalCostsData.map((cost) => ({
-          recipe_id: recipeId,
-          description: cost.description,
-          amount: cost.amount,
-          is_proportional: cost.is_proportional ?? true,
-        }));
+        const costsToInsert = additionalCostsData.map((cost) => {
+          let desc = cost.description;
+          if (cost.cost_type === 'percentage') {
+            desc = `${cost.description.replace(/\s*\[\d+(?:\.\d+)?%\]/, '').trim()} [${cost.amount}%]`;
+          }
+          return {
+            recipe_id: recipeId,
+            description: desc,
+            amount: cost.amount,
+            is_proportional: cost.is_proportional ?? true,
+          };
+        });
         await supabase.from('recipe_additional_costs').insert(costsToInsert);
       }
 

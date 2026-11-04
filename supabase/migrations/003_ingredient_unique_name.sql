@@ -7,3 +7,4 @@
 CREATE UNIQUE INDEX IF NOT EXISTS idx_ingredients_unique_name 
   ON public.ingredients (lower(trim(name))) 
   WHERE (is_archived = false);
+

@@ -238,8 +238,7 @@ function FichaTecnicaContent({
             <table className="w-full text-left text-xs">
               <thead className="bg-[#FDFBF9] border-b border-[#EFE4E6] text-[10px] font-bold text-[#7C6970] uppercase tracking-wider">
                 <tr>
-                  <th className="py-2.5 px-4">Tipo</th>
-                  <th className="py-2.5 px-4">Item / Ingrediente</th>
+                  <th className="py-2.5 px-4">Ingrediente</th>
                   <th className="py-2.5 px-4">Quantidade Utilizada</th>
                   <th className="py-2.5 px-4">Custo Unitário</th>
                   <th className="py-2.5 px-4 text-right">Custo Proporcional</th>
@@ -247,30 +246,14 @@ function FichaTecnicaContent({
               </thead>
               <tbody className="divide-y divide-[#F5ECED]">
                 {items.map((item, idx) => {
-                  const isIngredient = item.item_type === 'ingredient';
-                  const itemName = isIngredient
-                    ? item.ingredient?.name || 'Ingrediente'
-                    : item.sub_recipe?.name || 'Sub-receita';
+                  const itemName = item.ingredient?.name || 'Ingrediente';
 
-                  const unitCostStr = isIngredient && item.ingredient
+                  const unitCostStr = item.ingredient
                     ? formatUnitCost(item.ingredient.cost_per_base_unit, item.ingredient.base_unit)
-                    : item.sub_recipe
-                    ? `R$ ${(item.calculated_cost! / item.quantity).toFixed(4)}/${item.unit}`
                     : '—';
 
                   return (
                     <tr key={idx} className="hover:bg-[#FDFBF9]/80">
-                      <td className="py-3 px-4">
-                        <span
-                          className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase ${
-                            isIngredient
-                              ? 'bg-[#FDF0F3] text-[#8A3E50]'
-                              : 'bg-[#F8EEF0] text-[#6E4F57]'
-                          }`}
-                        >
-                          {isIngredient ? 'Ingrediente' : 'Sub-Receita'}
-                        </span>
-                      </td>
                       <td className="py-3 px-4 font-semibold text-[#2E2226]">
                         {itemName}
                       </td>
@@ -289,7 +272,7 @@ function FichaTecnicaContent({
               </tbody>
               <tfoot className="bg-[#FDFBF9] font-bold text-[#4A2832] border-t border-[#EFE4E6]">
                 <tr>
-                  <td colSpan={4} className="py-2.5 px-4 text-right text-xs">
+                  <td colSpan={3} className="py-2.5 px-4 text-right text-xs">
                     Subtotal Ingredientes:
                   </td>
                   <td className="py-2.5 px-4 text-right font-mono text-sm">
@@ -319,23 +302,32 @@ function FichaTecnicaContent({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#F5ECED]">
-                  {additionalCosts.map((cost, idx) => (
-                    <tr key={idx} className="hover:bg-[#FDFBF9]/80">
-                      <td className="py-3 px-4 font-medium text-[#2E2226]">
-                        {cost.description}
-                      </td>
-                      <td className="py-3 px-4 text-[#7C6970]">
-                        {cost.is_proportional ? (
-                          <span className="text-[#4A2832]">Proporcional ao rendimento</span>
-                        ) : (
-                          <span className="text-[#8C7A82]">Fixo por fornada</span>
-                        )}
-                      </td>
-                      <td className="py-3 px-4 text-right font-mono font-bold text-[#4A2832]">
-                        {formatCurrency(cost.amount)}
-                      </td>
-                    </tr>
-                  ))}
+                  {additionalCosts.map((cost, idx) => {
+                    const isPerc = cost.cost_type === 'percentage';
+                    const reaisVal = isPerc
+                      ? (breakdown.ingredientsCost * cost.amount) / 100
+                      : cost.amount;
+
+                    return (
+                      <tr key={idx} className="hover:bg-[#FDFBF9]/80">
+                        <td className="py-3 px-4 font-medium text-[#2E2226]">
+                          {cost.description}
+                        </td>
+                        <td className="py-3 px-4 text-[#7C6970]">
+                          {isPerc ? (
+                            <span className="font-semibold text-[#8A3E50] bg-[#FDF0F3] px-2 py-0.5 rounded text-[11px]">
+                              {cost.amount}% dos ingredientes
+                            </span>
+                          ) : (
+                            <span className="text-[#8C7A82]">Fixo em R$</span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4 text-right font-mono font-bold text-[#4A2832]">
+                          {formatCurrency(reaisVal)}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
                 <tfoot className="bg-[#FDFBF9] font-bold text-[#4A2832] border-t border-[#EFE4E6]">
                   <tr>

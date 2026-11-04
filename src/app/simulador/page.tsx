@@ -128,29 +128,6 @@ function SimuladorContent() {
                 className="font-mono text-base font-bold text-[#4A2832] h-11"
               />
             </div>
-
-            {/* Quick Multipliers for mobile convenience */}
-            <div className="flex flex-wrap gap-1.5 sm:col-span-3 pt-1">
-              <span className="text-[11px] font-medium text-[#7C6970] self-center mr-1">
-                Atalhos de escala:
-              </span>
-              {[0.5, 1, 2, 3, 5, 10].map((factor) => (
-                <button
-                  key={factor}
-                  type="button"
-                  onClick={() => {
-                    if (selectedRecipe) {
-                      const newYield = selectedRecipe.yield_quantity * factor;
-                      setDesiredYield(String(newYield));
-                      runSimulation(selectedRecipe, newYield);
-                    }
-                  }}
-                  className="px-3 py-1.5 rounded-xl border border-[#EFE4E6] bg-[#FDFBF9] hover:bg-[#FDF0F3] active:scale-95 text-xs font-semibold text-[#5E4850] transition-all"
-                >
-                  {factor}x
-                </button>
-              ))}
-            </div>
           </div>
 
           {selectedRecipe && simulation && (
