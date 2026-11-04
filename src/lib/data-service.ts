@@ -21,10 +21,10 @@ import {
   INITIAL_USER_SETTINGS,
 } from './mock-data';
 
-const STORAGE_KEY_INGREDIENTS = 'docecusto_ingredients_v1';
-const STORAGE_KEY_RECIPES = 'docecusto_recipes_v1';
-const STORAGE_KEY_SETTINGS = 'docecusto_settings_v1';
-const STORAGE_KEY_PRICE_HISTORY = 'docecusto_price_history_v1';
+const STORAGE_KEY_INGREDIENTS = 'docecusto_ingredients_v2';
+const STORAGE_KEY_RECIPES = 'docecusto_recipes_v2';
+const STORAGE_KEY_SETTINGS = 'docecusto_settings_v2';
+const STORAGE_KEY_PRICE_HISTORY = 'docecusto_price_history_v2';
 
 // Helper to access localStorage safely
 function getLocal<T>(key: string, defaultValue: T): T {
@@ -50,14 +50,20 @@ function setLocal<T>(key: string, value: T): void {
   }
 }
 
-// Ensure initial demo data is loaded if not already present
+// Clean legacy mock data and initialize clean state if not already present
 export function initializeDemoDataIfNeeded() {
   if (typeof window === 'undefined') return;
+  // Clear legacy mock keys
+  localStorage.removeItem('docecusto_ingredients_v1');
+  localStorage.removeItem('docecusto_recipes_v1');
+  localStorage.removeItem('docecusto_settings_v1');
+  localStorage.removeItem('docecusto_price_history_v1');
+
   if (!localStorage.getItem(STORAGE_KEY_INGREDIENTS)) {
-    localStorage.setItem(STORAGE_KEY_INGREDIENTS, JSON.stringify(INITIAL_INGREDIENTS));
+    localStorage.setItem(STORAGE_KEY_INGREDIENTS, JSON.stringify([]));
   }
   if (!localStorage.getItem(STORAGE_KEY_RECIPES)) {
-    localStorage.setItem(STORAGE_KEY_RECIPES, JSON.stringify(INITIAL_RECIPES));
+    localStorage.setItem(STORAGE_KEY_RECIPES, JSON.stringify([]));
   }
   if (!localStorage.getItem(STORAGE_KEY_SETTINGS)) {
     localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(INITIAL_USER_SETTINGS));
