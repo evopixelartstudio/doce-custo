@@ -8,7 +8,6 @@ import {
   BookOpenText,
   Calculator,
   Settings,
-  Sparkles,
   CakeSlice,
   Heart,
 } from 'lucide-react';
@@ -104,7 +103,7 @@ export function Sidebar() {
             <span className="font-medium text-[#4A2832]">Ateliê Conectado</span>
           </div>
           <span className="text-[10px] bg-[#FDF0F3] text-[#8A3E50] px-2 py-0.5 rounded-full font-medium">
-            Ativo
+            Supabase
           </span>
         </div>
       </div>

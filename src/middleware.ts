@@ -1,8 +1,15 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // Se tentar acessar a rota antiga de login, redireciona diretamente para o dashboard
-  if (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/recuperar-senha') {
+  const { pathname } = request.nextUrl;
+
+  // Rota raiz abre diretamente no dashboard
+  if (pathname === '/') {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+
+  // Se acessar rotas antigas de login ou recuperação, redireciona para o dashboard
+  if (pathname === '/login' || pathname === '/recuperar-senha') {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 

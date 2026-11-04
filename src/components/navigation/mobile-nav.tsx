@@ -74,21 +74,28 @@ export function MobileNav() {
               key={item.name}
               href={item.href}
               className={cn(
-                'flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all min-w-[56px] min-h-[48px] active:scale-95',
+                'flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all min-w-[58px]',
                 isActive
-                  ? 'text-[#C86D7F] font-bold'
-                  : 'text-[#7C6970] hover:text-[#4A2832]'
+                  ? 'text-[#C86D7F] font-semibold'
+                  : 'text-[#8C7A82] hover:text-[#4A2832]'
               )}
             >
               <div
                 className={cn(
-                  'p-1.5 rounded-xl transition-all',
-                  isActive ? 'bg-[#FDF0F3] text-[#C86D7F] scale-110 shadow-sm' : 'text-[#7C6970]'
+                  'p-1 rounded-xl transition-colors',
+                  isActive ? 'bg-[#FDF0F3]' : 'bg-transparent'
                 )}
               >
-                <Icon className="h-5 w-5" />
+                <Icon
+                  className={cn(
+                    'h-5 w-5',
+                    isActive ? 'text-[#C86D7F]' : 'text-[#8C7A82]'
+                  )}
+                />
               </div>
-              <span className="text-[10px] tracking-tight mt-0.5">{item.name}</span>
+              <span className="text-[10px] mt-0.5 tracking-tight font-medium">
+                {item.name}
+              </span>
             </Link>
           );
         })}

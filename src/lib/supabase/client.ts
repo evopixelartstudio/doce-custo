@@ -5,7 +5,6 @@ export function createClient() {
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !anonKey) {
-    // Return null or placeholder client in demo mode without crashing
     return null;
   }
 
@@ -17,4 +16,3 @@ export function isSupabaseConfigured(): boolean {
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   return Boolean(url && anonKey && !url.includes('your-project-id'));
 }
-

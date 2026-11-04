@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = 'https://peziqgjedtilikcimlqn.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlemlxZ2plZHRpbGlrY2ltbHFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3Nzc3MTEsImV4cCI6MjEwOTM1MzcxMX0.mVK88VqM5B0hX0p-8QMzx2kiYGEU6XfZQw2hjkaKn64';
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://peziqgjedtilikcimlqn.supabase.co';
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 describe('Supabase - Teste Real de Leitura e Gravação (Sem Login)', () => {
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

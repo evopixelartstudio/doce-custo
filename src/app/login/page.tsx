@@ -10,5 +10,9 @@ export default function LoginPage() {
     router.replace('/dashboard');
   }, [router]);
 
-  return null;
+  return (
+    <div className="min-h-screen bg-[#FDFBF9] flex items-center justify-center">
+      <span className="text-sm text-[#7C6970]">Redirecionando para o DoceCusto...</span>
+    </div>
+  );
 }
