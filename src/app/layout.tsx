@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { DevOverlayKiller } from "@/components/dev-overlay-killer";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -56,31 +57,9 @@ export default function RootLayout({
             `,
           }}
         />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                function removeNextDevTools() {
-                  var els = document.querySelectorAll('nextjs-portal, [data-nextjs-dev-tools-button]');
-                  for (var i = 0; i < els.length; i++) {
-                    els[i].remove();
-                  }
-                }
-                if (typeof window !== 'undefined') {
-                  removeNextDevTools();
-                  var obs = new MutationObserver(removeNextDevTools);
-                  if (document.documentElement) {
-                    obs.observe(document.documentElement, { childList: true, subtree: true });
-                  }
-                  window.addEventListener('DOMContentLoaded', removeNextDevTools);
-                  window.addEventListener('load', removeNextDevTools);
-                }
-              })();
-            `,
-          }}
-        />
       </head>
       <body className="min-h-full flex flex-col font-sans bg-[#FDFBF9] text-[#2E2226]">
+        <DevOverlayKiller />
         {children}
         <Toaster position="top-center" richColors closeButton />
       </body>
