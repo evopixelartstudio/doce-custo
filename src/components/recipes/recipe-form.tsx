@@ -9,13 +9,9 @@ import {
   Plus,
   Trash2,
   Wheat,
-  BookOpenText,
   DollarSign,
   AlertTriangle,
-  Info,
   Clock,
-  HelpCircle,
-  Sparkles,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -42,8 +38,6 @@ import {
   calculateSubRecipeItemCost,
   calculateRecipePricing,
   formatCurrency,
-  formatQuantity,
-  hasCircularDependency,
 } from '@/lib/calculations';
 import Decimal from 'decimal.js';
 import { toast } from 'sonner';
@@ -154,11 +148,9 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
         getUserSettings(),
       ]);
       setAllIngredients(ings);
-      // Filter out self to avoid selecting self as subrecipe
       setAllRecipes(recs.filter((r) => r.id !== initialData?.id));
       setSettings(sets);
 
-      // If new recipe and no additional costs yet, prefill from defaults
       if (!initialData && additionalCosts.length === 0 && sets.default_additional_costs) {
         setAdditionalCosts(
           sets.default_additional_costs.map((dac) => ({
@@ -244,8 +236,8 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
       numCardFee,
       numManualPrice
     );
-  } catch (err) {
-    // Graceful fallback during input
+  } catch {
+    // handled gracefully
   }
 
   // Item management handlers
@@ -285,7 +277,6 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
     setItems((prev) => {
       const copy = [...prev];
       copy[index] = { ...copy[index], ...patch };
-      // When changing ingredient, adapt default unit to ingredient's unit
       if (patch.ingredient_id) {
         const ing = ingredientMap.get(patch.ingredient_id);
         if (ing) {
@@ -296,7 +287,6 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
     });
   }
 
-  // Additional costs handlers
   function addAdditionalCost() {
     setAdditionalCosts((prev) => [
       ...prev,
@@ -320,7 +310,6 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
     });
   }
 
-  // Submit Handler
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -337,7 +326,6 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
       return;
     }
 
-    // Validate items
     for (const item of items) {
       const q = parseFloat(item.quantity.replace(',', '.'));
       if (isNaN(q) || q <= 0) {
@@ -414,14 +402,14 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
       <div className="flex items-center gap-3">
         <Link href="/receitas">
           <Button variant="ghost" size="icon" className="rounded-xl">
-            <ArrowLeft className="h-5 w-5 text-[#35483E]" />
+            <ArrowLeft className="h-5 w-5 text-[#4A2832]" />
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-[#35483E] tracking-tight">
+          <h1 className="text-2xl font-bold text-[#4A2832] tracking-tight">
             {initialData ? `Editar ${initialData.name}` : 'Nova Receita'}
           </h1>
-          <p className="text-xs text-[#6C7A72]">
+          <p className="text-xs text-[#7C6970]">
             Componha os ingredientes, custos fixos e precifique com margem segura.
           </p>
         </div>
@@ -429,12 +417,12 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Section 1: Basic Information */}
-        <Card className="border-[#E8E3DB] bg-white">
+        <Card className="border-[#EFE4E6] bg-white">
           <CardHeader className="pb-4">
-            <CardTitle className="text-base text-[#35483E]">
+            <CardTitle className="text-base text-[#4A2832]">
               1. Dados Gerais da Receita
             </CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-xs text-[#7C6970]">
               Identificação, rendimento e tempo de produção.
             </CardDescription>
           </CardHeader>
@@ -442,7 +430,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5 sm:col-span-2">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Nome da Receita *
                 </label>
                 <Input
@@ -455,7 +443,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Categoria
                 </label>
                 <Input
@@ -467,8 +455,8 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E] flex items-center gap-1.5">
-                  <Clock className="h-3.5 w-3.5 text-[#6D8576]" />
+                <label className="text-xs font-semibold text-[#5E4850] flex items-center gap-1.5">
+                  <Clock className="h-3.5 w-3.5 text-[#C86D7F]" />
                   Tempo de Preparo (minutos)
                 </label>
                 <Input
@@ -480,7 +468,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Rendimento da Receita *
                 </label>
                 <Input
@@ -494,13 +482,13 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Unidade do Rendimento *
                 </label>
                 <select
                   value={yieldUnit}
                   onChange={(e) => setYieldUnit(e.target.value as YieldUnit)}
-                  className="flex h-11 w-full rounded-xl border border-[#E5E0D8] bg-white px-3.5 py-2 text-sm text-[#232C27] focus:border-[#6D8576] focus:outline-none focus:ring-2 focus:ring-[#6D8576]/20"
+                  className="flex h-11 w-full rounded-xl border border-[#EFE4E6] bg-white px-3.5 py-2 text-sm text-[#2E2226] focus:border-[#C86D7F] focus:outline-none focus:ring-2 focus:ring-[#C86D7F]/20"
                 >
                   {yieldUnits.map((u) => (
                     <option key={u.value} value={u.value}>
@@ -511,7 +499,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
               </div>
 
               <div className="space-y-1.5 sm:col-span-2">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Foto da Receita (URL ou Storage)
                 </label>
                 <Input
@@ -523,7 +511,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
               </div>
 
               <div className="space-y-1.5 sm:col-span-2">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Modo de Preparo / Descrição (Opcional)
                 </label>
                 <textarea
@@ -531,7 +519,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                   placeholder="Ex: Bater os ovos com o açúcar, incorporar o chocolate delicadamente..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full rounded-xl border border-[#E5E0D8] bg-white p-3 text-sm text-[#232C27] focus:border-[#6D8576] focus:outline-none focus:ring-2 focus:ring-[#6D8576]/20"
+                  className="w-full rounded-xl border border-[#EFE4E6] bg-white p-3 text-sm text-[#2E2226] focus:border-[#C86D7F] focus:outline-none focus:ring-2 focus:ring-[#C86D7F]/20"
                 />
               </div>
             </div>
@@ -539,13 +527,13 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
         </Card>
 
         {/* Section 2: Ingredients & Sub-recipes */}
-        <Card className="border-[#E8E3DB] bg-white">
+        <Card className="border-[#EFE4E6] bg-white">
           <CardHeader className="pb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
-              <CardTitle className="text-base text-[#35483E]">
+              <CardTitle className="text-base text-[#4A2832]">
                 2. Ingredientes e Sub-Receitas
               </CardTitle>
-              <CardDescription className="text-xs">
+              <CardDescription className="text-xs text-[#7C6970]">
                 Selecione os ingredientes ou preparações já cadastradas e informe as quantidades.
               </CardDescription>
             </div>
@@ -558,7 +546,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                 onClick={addIngredientItem}
                 className="text-xs font-medium"
               >
-                <Plus className="h-3.5 w-3.5 mr-1 text-[#6D8576]" />
+                <Plus className="h-3.5 w-3.5 mr-1 text-[#C86D7F]" />
                 Ingrediente
               </Button>
               <Button
@@ -568,7 +556,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                 onClick={addSubRecipeItem}
                 className="text-xs font-medium"
               >
-                <Plus className="h-3.5 w-3.5 mr-1 text-[#6D8576]" />
+                <Plus className="h-3.5 w-3.5 mr-1 text-[#C86D7F]" />
                 Sub-Receita
               </Button>
             </div>
@@ -576,8 +564,8 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
 
           <CardContent className="space-y-3">
             {items.length === 0 ? (
-              <div className="p-8 text-center text-sm text-[#7A8880] border border-dashed border-[#E5E0D8] rounded-2xl space-y-2">
-                <Wheat className="h-8 w-8 text-[#A8B4AD] mx-auto" />
+              <div className="p-8 text-center text-sm text-[#7C6970] border border-dashed border-[#EFE4E6] rounded-2xl space-y-2">
+                <Wheat className="h-8 w-8 text-[#C9B3B8] mx-auto" />
                 <p>Nenhum item adicionado à receita ainda.</p>
                 <div className="flex items-center justify-center gap-2 pt-2">
                   <Button
@@ -606,7 +594,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                   return (
                     <div
                       key={index}
-                      className="p-3.5 rounded-2xl border border-[#E7E2D8] bg-[#FAF8F5] flex flex-col sm:flex-row sm:items-center gap-3"
+                      className="p-3.5 rounded-2xl border border-[#EFE4E6] bg-[#FDFBF9] flex flex-col sm:flex-row sm:items-center gap-3"
                     >
                       {/* Item Type Badge */}
                       <div className="shrink-0 flex items-center justify-between sm:justify-start gap-2">
@@ -632,7 +620,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                             onChange={(e) =>
                               updateItem(index, { ingredient_id: e.target.value })
                             }
-                            className="w-full h-10 rounded-xl border border-[#E5E0D8] bg-white px-3 text-xs text-[#28362F] font-medium focus:border-[#6D8576] focus:outline-none"
+                            className="w-full h-10 rounded-xl border border-[#EFE4E6] bg-white px-3 text-xs text-[#2E2226] font-medium focus:border-[#C86D7F] focus:outline-none"
                           >
                             <option value="">Selecione um ingrediente...</option>
                             {allIngredients.map((ing) => (
@@ -647,7 +635,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                             onChange={(e) =>
                               updateItem(index, { sub_recipe_id: e.target.value })
                             }
-                            className="w-full h-10 rounded-xl border border-[#E5E0D8] bg-white px-3 text-xs text-[#28362F] font-medium focus:border-[#6D8576] focus:outline-none"
+                            className="w-full h-10 rounded-xl border border-[#EFE4E6] bg-white px-3 text-xs text-[#2E2226] font-medium focus:border-[#C86D7F] focus:outline-none"
                           >
                             <option value="">Selecione uma sub-receita...</option>
                             {allRecipes.map((rec) => (
@@ -680,7 +668,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                               unit: e.target.value as UnitType,
                             })
                           }
-                          className="h-10 rounded-xl border border-[#E5E0D8] bg-white px-2.5 text-xs text-[#28362F] focus:border-[#6D8576] focus:outline-none"
+                          className="h-10 rounded-xl border border-[#EFE4E6] bg-white px-2.5 text-xs text-[#2E2226] focus:border-[#C86D7F] focus:outline-none"
                         >
                           {availableUnits.map((u) => (
                             <option key={u.value} value={u.value}>
@@ -692,14 +680,14 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
 
                       {/* Calculated Cost Display */}
                       <div className="flex items-center justify-between sm:justify-end gap-3 min-w-[110px]">
-                        <span className="font-mono text-xs font-bold text-[#35483E]">
+                        <span className="font-mono text-xs font-bold text-[#4A2832]">
                           {formatCurrency(calculatedCost)}
                         </span>
 
                         <button
                           type="button"
                           onClick={() => removeItem(index)}
-                          className="p-1.5 rounded-lg text-[#8C9890] hover:text-[#C85A54] hover:bg-[#FBEBEA] transition-colors"
+                          className="p-1.5 rounded-lg text-[#968289] hover:text-[#C44D56] hover:bg-[#FDF2F3] transition-colors"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -711,23 +699,23 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
             )}
 
             {/* Total Ingredients Cost Summary */}
-            <div className="pt-2 flex justify-between items-center text-sm font-semibold border-t border-[#EAE5DC]">
-              <span className="text-[#59695F]">Total dos Ingredientes:</span>
-              <span className="font-mono text-base text-[#35483E]">
+            <div className="pt-2 flex justify-between items-center text-sm font-semibold border-t border-[#EFE4E6]">
+              <span className="text-[#6E4F57]">Total dos Ingredientes:</span>
+              <span className="font-mono text-base text-[#4A2832]">
                 {formatCurrency(totalIngredientsCost.toNumber())}
               </span>
             </div>
           </CardContent>
         </Card>
 
-        {/* Section 3: Additional Costs (Embalagem, Gás, Mão de Obra, etc.) */}
-        <Card className="border-[#E8E3DB] bg-white">
+        {/* Section 3: Additional Costs */}
+        <Card className="border-[#EFE4E6] bg-white">
           <CardHeader className="pb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
-              <CardTitle className="text-base text-[#35483E]">
+              <CardTitle className="text-base text-[#4A2832]">
                 3. Custos Adicionais da Produção
               </CardTitle>
-              <CardDescription className="text-xs">
+              <CardDescription className="text-xs text-[#7C6970]">
                 Embalagem, gás, energia, mão de obra e transporte.
               </CardDescription>
             </div>
@@ -739,14 +727,14 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
               onClick={addAdditionalCost}
               className="text-xs font-medium"
             >
-              <Plus className="h-3.5 w-3.5 mr-1 text-[#6D8576]" />
+              <Plus className="h-3.5 w-3.5 mr-1 text-[#C86D7F]" />
               Adicionar Custo
             </Button>
           </CardHeader>
 
           <CardContent className="space-y-3">
             {additionalCosts.length === 0 ? (
-              <p className="text-xs text-[#7A8880] py-2 text-center">
+              <p className="text-xs text-[#7C6970] py-2 text-center">
                 Nenhum custo adicional adicionado a esta receita.
               </p>
             ) : (
@@ -754,7 +742,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                 {additionalCosts.map((ac, idx) => (
                   <div
                     key={idx}
-                    className="p-3 rounded-xl border border-[#E7E2D8] bg-[#FAF8F5] flex flex-col sm:flex-row sm:items-center gap-3"
+                    className="p-3 rounded-xl border border-[#EFE4E6] bg-[#FDFBF9] flex flex-col sm:flex-row sm:items-center gap-3"
                   >
                     <Input
                       type="text"
@@ -770,7 +758,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
 
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs text-[#6F7D74]">R$</span>
+                        <span className="text-xs text-[#7C6970]">R$</span>
                         <Input
                           type="number"
                           step="0.01"
@@ -783,7 +771,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                         />
                       </div>
 
-                      <label className="flex items-center gap-1.5 text-xs text-[#4E5B53] cursor-pointer whitespace-nowrap">
+                      <label className="flex items-center gap-1.5 text-xs text-[#5E4850] cursor-pointer whitespace-nowrap">
                         <input
                           type="checkbox"
                           checked={ac.is_proportional}
@@ -792,7 +780,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                               is_proportional: e.target.checked,
                             })
                           }
-                          className="rounded text-[#6D8576] focus:ring-[#6D8576]"
+                          className="rounded text-[#C86D7F] focus:ring-[#C86D7F]"
                         />
                         <span>Proporcional ao lote</span>
                       </label>
@@ -800,7 +788,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                       <button
                         type="button"
                         onClick={() => removeAdditionalCost(idx)}
-                        className="p-1 rounded text-[#8C9890] hover:text-[#C85A54] transition-colors"
+                        className="p-1 rounded text-[#968289] hover:text-[#C44D56] transition-colors"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
@@ -810,9 +798,9 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
               </div>
             )}
 
-            <div className="pt-2 flex justify-between items-center text-sm font-semibold border-t border-[#EAE5DC]">
-              <span className="text-[#59695F]">Total dos Custos Adicionais:</span>
-              <span className="font-mono text-base text-[#35483E]">
+            <div className="pt-2 flex justify-between items-center text-sm font-semibold border-t border-[#EFE4E6]">
+              <span className="text-[#6E4F57]">Total dos Custos Adicionais:</span>
+              <span className="font-mono text-base text-[#4A2832]">
                 {formatCurrency(totalAdditionalCosts.toNumber())}
               </span>
             </div>
@@ -820,42 +808,42 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
         </Card>
 
         {/* Section 4: Pricing & Selling Price Calculator */}
-        <Card className="border-[#6D8576]/30 bg-white shadow-sm overflow-hidden">
-          <div className="bg-[#EFF5F1] p-4 border-b border-[#D5E3DB]">
-            <CardTitle className="text-base text-[#35483E] flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-[#6D8576]" />
+        <Card className="border-[#F7D8DF] bg-white shadow-sm overflow-hidden">
+          <div className="bg-[#FDF0F3] p-4 border-b border-[#F7D8DF]">
+            <CardTitle className="text-base text-[#4A2832] flex items-center gap-2">
+              <DollarSign className="h-5 w-5 text-[#C86D7F]" />
               4. Precificação e Margem de Venda
             </CardTitle>
-            <CardDescription className="text-xs text-[#526359] mt-0.5">
+            <CardDescription className="text-xs text-[#6E4F57] mt-0.5">
               Escolha entre Acréscimo sobre custo (Markup) ou Margem desejada sobre o preço de venda.
             </CardDescription>
           </div>
 
           <CardContent className="p-5 space-y-6">
             {/* Grand Total Cost Summary Box */}
-            <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E7E2D8] grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
+            <div className="p-4 rounded-2xl bg-[#FDFBF9] border border-[#EFE4E6] grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
               <div>
-                <span className="text-[11px] uppercase font-semibold text-[#6C7A72] block">
+                <span className="text-[11px] uppercase font-semibold text-[#8C7A82] block">
                   Custo Total de Produção
                 </span>
-                <span className="text-xl font-bold font-mono text-[#35483E]">
+                <span className="text-xl font-bold font-mono text-[#4A2832]">
                   {formatCurrency(grandTotalCost.toNumber())}
                 </span>
-                <span className="text-xs text-[#7B8880] block">
+                <span className="text-xs text-[#968289] block">
                   Ingredientes + Custos Adicionais
                 </span>
               </div>
 
-              <div className="border-t sm:border-t-0 sm:border-l border-[#E5E0D8] pt-2 sm:pt-0 sm:pl-4">
-                <span className="text-[11px] uppercase font-semibold text-[#6C7A72] block">
+              <div className="border-t sm:border-t-0 sm:border-l border-[#EFE4E6] pt-2 sm:pt-0 sm:pl-4">
+                <span className="text-[11px] uppercase font-semibold text-[#8C7A82] block">
                   Custo por Unidade / Porção
                 </span>
-                <span className="text-xl font-bold font-mono text-[#6D8576]">
+                <span className="text-xl font-bold font-mono text-[#C86D7F]">
                   {pricingResult
                     ? formatCurrency(pricingResult.costPerUnit)
                     : 'R$ 0,00'}
                 </span>
-                <span className="text-xs text-[#7B8880] block">
+                <span className="text-xs text-[#968289] block">
                   Dividido por {numYield} {yieldUnit}
                 </span>
               </div>
@@ -863,7 +851,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
 
             {/* Method Chooser */}
             <div className="space-y-3">
-              <label className="text-xs font-semibold text-[#38463E] block">
+              <label className="text-xs font-semibold text-[#4A2832] block">
                 Método de Formação do Preço:
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -872,19 +860,19 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                   onClick={() => setPricingMethod('margin')}
                   className={`p-4 rounded-xl border text-left transition-all ${
                     pricingMethod === 'margin'
-                      ? 'border-[#6D8576] bg-[#EFF5F1] shadow-sm'
-                      : 'border-[#E5E0D8] bg-white hover:bg-[#FAF8F5]'
+                      ? 'border-[#C86D7F] bg-[#FDF0F3] shadow-sm'
+                      : 'border-[#EFE4E6] bg-white hover:bg-[#FDFBF9]'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-sm text-[#35483E]">
+                    <span className="font-semibold text-sm text-[#4A2832]">
                       Método B: Margem sobre Venda
                     </span>
                     {pricingMethod === 'margin' && (
-                      <span className="h-2.5 w-2.5 rounded-full bg-[#6D8576]" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-[#C86D7F]" />
                     )}
                   </div>
-                  <p className="text-[11px] text-[#69766F] leading-tight">
+                  <p className="text-[11px] text-[#7C6970] leading-tight">
                     Recomendado para comércio: fixa a porcentagem real do preço final que fica como lucro.
                   </p>
                 </button>
@@ -894,19 +882,19 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                   onClick={() => setPricingMethod('markup')}
                   className={`p-4 rounded-xl border text-left transition-all ${
                     pricingMethod === 'markup'
-                      ? 'border-[#6D8576] bg-[#EFF5F1] shadow-sm'
-                      : 'border-[#E5E0D8] bg-white hover:bg-[#FAF8F5]'
+                      ? 'border-[#C86D7F] bg-[#FDF0F3] shadow-sm'
+                      : 'border-[#EFE4E6] bg-white hover:bg-[#FDFBF9]'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-sm text-[#35483E]">
+                    <span className="font-semibold text-sm text-[#4A2832]">
                       Método A: Markup sobre Custo
                     </span>
                     {pricingMethod === 'markup' && (
-                      <span className="h-2.5 w-2.5 rounded-full bg-[#6D8576]" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-[#C86D7F]" />
                     )}
                   </div>
-                  <p className="text-[11px] text-[#69766F] leading-tight">
+                  <p className="text-[11px] text-[#7C6970] leading-tight">
                     Multiplica o custo por um fator (ex: 100% de acréscimo dobra o valor do custo).
                   </p>
                 </button>
@@ -917,7 +905,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {pricingMethod === 'margin' ? (
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#38463E]">
+                  <label className="text-xs font-semibold text-[#5E4850]">
                     Margem Desejada (%) *
                   </label>
                   <Input
@@ -929,13 +917,13 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                     onChange={(e) => setTargetMarginPercentage(e.target.value)}
                     required
                   />
-                  <span className="text-[10px] text-[#78857E]">
+                  <span className="text-[10px] text-[#968289]">
                     Ex: 50% significa que metade do preço é lucro.
                   </span>
                 </div>
               ) : (
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#38463E]">
+                  <label className="text-xs font-semibold text-[#5E4850]">
                     Markup Desejado (%) *
                   </label>
                   <Input
@@ -946,14 +934,14 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                     onChange={(e) => setMarkupPercentage(e.target.value)}
                     required
                   />
-                  <span className="text-[10px] text-[#78857E]">
+                  <span className="text-[10px] text-[#968289]">
                     Ex: 100% adiciona uma vez o valor do custo.
                   </span>
                 </div>
               )}
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Taxa de Cartão / Gateway (%)
                 </label>
                 <Input
@@ -964,13 +952,13 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                   value={cardFeePercentage}
                   onChange={(e) => setCardFeePercentage(e.target.value)}
                 />
-                <span className="text-[10px] text-[#78857E]">
+                <span className="text-[10px] text-[#968289]">
                   Incide sobre o valor da venda.
                 </span>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Preço Manual Praticado (R$)
                 </label>
                 <Input
@@ -984,7 +972,7 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
                   value={manualSalePrice}
                   onChange={(e) => setManualSalePrice(e.target.value)}
                 />
-                <span className="text-[10px] text-[#78857E]">
+                <span className="text-[10px] text-[#968289]">
                   Deixe vazio para usar o sugerido.
                 </span>
               </div>
@@ -993,34 +981,34 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
             {/* Results & Margins Panel */}
             {pricingResult && (
               <div className="space-y-3">
-                <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E7E2D8] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="p-4 rounded-2xl bg-[#FDFBF9] border border-[#EFE4E6] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div>
-                    <span className="text-xs font-medium text-[#6F7D74] block">
+                    <span className="text-xs font-medium text-[#7C6970] block">
                       Preço de Venda Efetivo:
                     </span>
-                    <span className="text-2xl font-bold font-mono text-[#35483E]">
+                    <span className="text-2xl font-bold font-mono text-[#4A2832]">
                       {formatCurrency(pricingResult.effectiveSalePrice)}
                     </span>
-                    <span className="text-xs text-[#6F7D74] block">
+                    <span className="text-xs text-[#7C6970] block">
                       (Sugerido: {formatCurrency(pricingResult.suggestedSalePrice)})
                     </span>
                   </div>
 
                   <div className="flex items-center gap-6">
                     <div>
-                      <span className="text-[11px] uppercase font-semibold text-[#7E8B83] block">
+                      <span className="text-[11px] uppercase font-semibold text-[#8C7A82] block">
                         Lucro Bruto Estimado
                       </span>
-                      <span className="text-base font-bold font-mono text-[#477A57]">
+                      <span className="text-base font-bold font-mono text-[#2D6A4F]">
                         + {formatCurrency(pricingResult.estimatedGrossProfit)}
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-[11px] uppercase font-semibold text-[#7E8B83] block">
+                      <span className="text-[11px] uppercase font-semibold text-[#8C7A82] block">
                         Margem Resultante
                       </span>
-                      <span className="text-base font-bold font-mono text-[#35483E]">
+                      <span className="text-base font-bold font-mono text-[#4A2832]">
                         {pricingResult.estimatedProfitMargin.toFixed(1)}%
                       </span>
                     </div>
@@ -1029,8 +1017,8 @@ export function RecipeForm({ initialData }: RecipeFormProps) {
 
                 {/* Warning Alert if manual price puts margin below target */}
                 {pricingResult.isMarginBelowTarget && (
-                  <div className="p-3.5 rounded-xl bg-[#FEF6EC] border border-[#F9E2C3] flex items-center gap-3 text-xs text-[#9A5A0A]">
-                    <AlertTriangle className="h-5 w-5 shrink-0 text-[#E08A1E]" />
+                  <div className="p-3.5 rounded-xl bg-[#FFF6EE] border border-[#FCE3CB] flex items-center gap-3 text-xs text-[#A6601A]">
+                    <AlertTriangle className="h-5 w-5 shrink-0 text-[#D97724]" />
                     <span>
                       Atenção: Com o preço manual informado de{' '}
                       <strong>{formatCurrency(pricingResult.effectiveSalePrice)}</strong>, a sua margem de lucro ficou em{' '}

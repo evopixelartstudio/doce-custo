@@ -15,17 +15,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FDFBF9] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-3 border-[#6D8576] border-t-transparent rounded-full animate-spin" />
-          <span className="text-sm font-medium text-[#65736B]">Carregando DoceCusto...</span>
+          <div className="w-8 h-8 border-3 border-[#C86D7F] border-t-transparent rounded-full animate-spin" />
+          <span className="text-sm font-medium text-[#7C6970]">Carregando DoceCusto...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[#FAF8F5]">
+    <div className="min-h-screen flex flex-col md:flex-row bg-[#FDFBF9]">
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
         <MobileNav />

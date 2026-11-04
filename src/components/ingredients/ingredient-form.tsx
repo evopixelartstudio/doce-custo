@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useId } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Save, Sparkles, AlertCircle, Calculator } from 'lucide-react';
+import { ArrowLeft, Save, Calculator } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -12,7 +12,6 @@ import type { Ingredient, IngredientCategory, UnitType, BaseUnit } from '@/lib/t
 import {
   calculateBaseUnitCost,
   getBaseUnit,
-  formatCurrency,
   formatUnitCost,
 } from '@/lib/calculations';
 import { toast } from 'sonner';
@@ -69,7 +68,6 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
   // Live calculation of base unit and cost
   let calculatedBaseUnit: BaseUnit = 'g';
   let liveBaseUnitCost: number | null = null;
-  let calculationError: string | null = null;
 
   try {
     calculatedBaseUnit = getBaseUnit(packageUnit);
@@ -83,8 +81,8 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
         packageUnit
       ).toNumber();
     }
-  } catch (err: any) {
-    calculationError = err.message;
+  } catch {
+    // handled gracefully
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -148,26 +146,26 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
       <div className="flex items-center gap-3">
         <Link href="/ingredientes">
           <Button variant="ghost" size="icon" className="rounded-xl">
-            <ArrowLeft className="h-5 w-5 text-[#35483E]" />
+            <ArrowLeft className="h-5 w-5 text-[#4A2832]" />
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-[#35483E] tracking-tight">
+          <h1 className="text-2xl font-bold text-[#4A2832] tracking-tight">
             {initialData ? 'Editar Ingrediente' : 'Novo Ingrediente'}
           </h1>
-          <p className="text-xs text-[#6C7A72]">
+          <p className="text-xs text-[#7C6970]">
             Informe a embalagem adquirida e o preço pago no mercado ou atacado.
           </p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <Card className="border-[#E8E3DB] bg-white">
+        <Card className="border-[#EFE4E6] bg-white">
           <CardHeader className="pb-4">
-            <CardTitle className="text-base text-[#35483E]">
+            <CardTitle className="text-base text-[#4A2832]">
               Informações do Ingrediente
             </CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-xs text-[#7C6970]">
               Dados de identificação e categoria culinária.
             </CardDescription>
           </CardHeader>
@@ -175,7 +173,7 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5 sm:col-span-2">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Nome do Ingrediente *
                 </label>
                 <Input
@@ -188,13 +186,13 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Categoria *
                 </label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value as IngredientCategory)}
-                  className="flex h-11 w-full rounded-xl border border-[#E5E0D8] bg-white px-3.5 py-2 text-sm text-[#232C27] focus:border-[#6D8576] focus:outline-none focus:ring-2 focus:ring-[#6D8576]/20"
+                  className="flex h-11 w-full rounded-xl border border-[#EFE4E6] bg-white px-3.5 py-2 text-sm text-[#2E2226] focus:border-[#C86D7F] focus:outline-none focus:ring-2 focus:ring-[#C86D7F]/20"
                 >
                   {categories.map((c) => (
                     <option key={c.value} value={c.value}>
@@ -205,7 +203,7 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Marca do Produto (Opcional)
                 </label>
                 <Input
@@ -220,12 +218,12 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
         </Card>
 
         {/* Embalagem e Preço da Compra */}
-        <Card className="border-[#E8E3DB] bg-white">
+        <Card className="border-[#EFE4E6] bg-white">
           <CardHeader className="pb-4">
-            <CardTitle className="text-base text-[#35483E]">
+            <CardTitle className="text-base text-[#4A2832]">
               Embalagem e Preço da Compra
             </CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-xs text-[#7C6970]">
               Informe a quantidade líquida descrita na embalagem e o valor total que pagou.
             </CardDescription>
           </CardHeader>
@@ -233,7 +231,7 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
           <CardContent className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Quantidade Comprada *
                 </label>
                 <Input
@@ -247,13 +245,13 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Unidade de Compra *
                 </label>
                 <select
                   value={packageUnit}
                   onChange={(e) => setPackageUnit(e.target.value as UnitType)}
-                  className="flex h-11 w-full rounded-xl border border-[#E5E0D8] bg-white px-3.5 py-2 text-sm text-[#232C27] focus:border-[#6D8576] focus:outline-none focus:ring-2 focus:ring-[#6D8576]/20"
+                  className="flex h-11 w-full rounded-xl border border-[#EFE4E6] bg-white px-3.5 py-2 text-sm text-[#2E2226] focus:border-[#C86D7F] focus:outline-none focus:ring-2 focus:ring-[#C86D7F]/20"
                 >
                   {unitOptions.map((u) => (
                     <option key={u.value} value={u.value}>
@@ -264,7 +262,7 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Preço Total Pago (R$) *
                 </label>
                 <Input
@@ -279,16 +277,16 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
             </div>
 
             {/* Live Calculation Preview Banner */}
-            <div className="p-4 rounded-2xl bg-[#EFF5F1] border border-[#D5E3DB] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="p-4 rounded-2xl bg-[#FDF0F3] border border-[#F7D8DF] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-[#6D8576] text-white flex items-center justify-center shrink-0">
+                <div className="h-10 w-10 rounded-xl bg-[#C86D7F] text-white flex items-center justify-center shrink-0 shadow-sm">
                   <Calculator className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-[#48594F]">
+                  <p className="text-xs font-medium text-[#8A3E50]">
                     Custo Unitário Calculado
                   </p>
-                  <p className="text-lg font-bold font-mono text-[#283B31]">
+                  <p className="text-lg font-bold font-mono text-[#4A2832]">
                     {liveBaseUnitCost !== null
                       ? formatUnitCost(liveBaseUnitCost, calculatedBaseUnit)
                       : 'Preencha quantidade e preço'}
@@ -296,10 +294,10 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
                 </div>
               </div>
 
-              <div className="text-left sm:text-right text-xs text-[#59695F]">
+              <div className="text-left sm:text-right text-xs text-[#7C6970]">
                 <span>Unidade-base interna: </span>
-                <strong className="text-[#283B31]">{calculatedBaseUnit}</strong>
-                <p className="text-[11px] text-[#718076]">
+                <strong className="text-[#4A2832]">{calculatedBaseUnit}</strong>
+                <p className="text-[11px] text-[#968289]">
                   Sem arredondamentos prematuros
                 </p>
               </div>
@@ -308,12 +306,12 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
         </Card>
 
         {/* Informações Avançadas (Opcionais) */}
-        <Card className="border-[#E8E3DB] bg-white">
+        <Card className="border-[#EFE4E6] bg-white">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-[#35483E]">
+            <CardTitle className="text-sm text-[#4A2832]">
               Conversões Especiais (Opcional)
             </CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-xs text-[#7C6970]">
               Configure apenas se quiser que receitas convertam gramas em ml ou peças em peso para este ingrediente.
             </CardDescription>
           </CardHeader>
@@ -321,7 +319,7 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Densidade (g/ml)
                 </label>
                 <Input
@@ -331,13 +329,13 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
                   value={densityGPerMl}
                   onChange={(e) => setDensityGPerMl(e.target.value)}
                 />
-                <span className="text-[11px] text-[#78857E]">
+                <span className="text-[11px] text-[#8C7A82]">
                   Permite usar gramas em líquidos na receita.
                 </span>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Peso por Unidade (g)
                 </label>
                 <Input
@@ -347,14 +345,14 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
                   value={unitWeightG}
                   onChange={(e) => setUnitWeightG(e.target.value)}
                 />
-                <span className="text-[11px] text-[#78857E]">
+                <span className="text-[11px] text-[#8C7A82]">
                   Permite converter unidades em gramas.
                 </span>
               </div>
             </div>
 
             <div className="space-y-1.5 pt-2">
-              <label className="text-xs font-semibold text-[#38463E]">
+              <label className="text-xs font-semibold text-[#5E4850]">
                 Observações Culinárias
               </label>
               <textarea
@@ -362,7 +360,7 @@ export function IngredientForm({ initialData }: IngredientFormProps) {
                 placeholder="Ex: Guardar em local refrigerado após abrir, fornecedor X..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full rounded-xl border border-[#E5E0D8] bg-white p-3 text-sm text-[#232C27] focus:border-[#6D8576] focus:outline-none focus:ring-2 focus:ring-[#6D8576]/20"
+                className="w-full rounded-xl border border-[#EFE4E6] bg-white p-3 text-sm text-[#2E2226] focus:border-[#C86D7F] focus:outline-none focus:ring-2 focus:ring-[#C86D7F]/20"
               />
             </div>
           </CardContent>

@@ -10,8 +10,6 @@ import {
   ArrowUpRight,
   Clock,
   Sparkles,
-  TrendingUp,
-  AlertCircle,
   ChefHat,
 } from 'lucide-react';
 import { AppShell } from '@/components/layout/app-shell';
@@ -96,14 +94,14 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-[#6D8576] uppercase tracking-wider bg-[#EFF5F1] px-2.5 py-0.5 rounded-full">
-                {settings?.business_name || 'Confeitaria'}
+              <span className="text-xs font-semibold text-[#C86D7F] uppercase tracking-wider bg-[#FDF0F3] px-2.5 py-0.5 rounded-full border border-[#F7D8DF]">
+                {settings?.business_name || 'Confeitaria Artesanal'}
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#35483E] tracking-tight mt-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#4A2832] tracking-tight mt-1">
               Painel de Custos & Produção
             </h1>
-            <p className="text-sm text-[#6C7A72]">
+            <p className="text-sm text-[#7C6970]">
               Visão consolidada de ingredientes, receitas e margens de venda.
             </p>
           </div>
@@ -112,7 +110,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2.5">
             <Link href="/ingredientes/novo">
               <Button variant="outline" size="sm" className="font-medium">
-                <Plus className="h-4 w-4 mr-1 text-[#6D8576]" />
+                <Plus className="h-4 w-4 mr-1 text-[#C86D7F]" />
                 Novo Ingrediente
               </Button>
             </Link>
@@ -127,58 +125,58 @@ export default function DashboardPage() {
 
         {/* 3 Metric Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="bg-white border-[#E8E3DB]">
+          <Card className="bg-white border-[#EFE4E6]">
             <CardContent className="p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-[#738078] uppercase tracking-wider">
+                <p className="text-xs font-medium text-[#7C6970] uppercase tracking-wider">
                   Ingredientes
                 </p>
-                <p className="text-2xl sm:text-3xl font-bold text-[#35483E] mt-1">
+                <p className="text-2xl sm:text-3xl font-bold text-[#4A2832] mt-1">
                   {loading ? '...' : totalIngredients}
                 </p>
-                <p className="text-xs text-[#7B8880] mt-1">
+                <p className="text-xs text-[#8C7A82] mt-1">
                   Cadastrados e com custo unitário
                 </p>
               </div>
-              <div className="h-12 w-12 rounded-2xl bg-[#F0F5F2] flex items-center justify-center text-[#6D8576]">
+              <div className="h-12 w-12 rounded-2xl bg-[#FDF0F3] flex items-center justify-center text-[#C86D7F]">
                 <Wheat className="h-6 w-6" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-[#E8E3DB]">
+          <Card className="bg-white border-[#EFE4E6]">
             <CardContent className="p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-[#738078] uppercase tracking-wider">
+                <p className="text-xs font-medium text-[#7C6970] uppercase tracking-wider">
                   Receitas Ativas
                 </p>
-                <p className="text-2xl sm:text-3xl font-bold text-[#35483E] mt-1">
+                <p className="text-2xl sm:text-3xl font-bold text-[#4A2832] mt-1">
                   {loading ? '...' : totalRecipes}
                 </p>
-                <p className="text-xs text-[#7B8880] mt-1">
+                <p className="text-xs text-[#8C7A82] mt-1">
                   Fichas técnicas calculadas
                 </p>
               </div>
-              <div className="h-12 w-12 rounded-2xl bg-[#F0F5F2] flex items-center justify-center text-[#6D8576]">
+              <div className="h-12 w-12 rounded-2xl bg-[#FDF0F3] flex items-center justify-center text-[#C86D7F]">
                 <BookOpenText className="h-6 w-6" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-[#E8E3DB]">
+          <Card className="bg-white border-[#EFE4E6]">
             <CardContent className="p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-[#738078] uppercase tracking-wider">
+                <p className="text-xs font-medium text-[#7C6970] uppercase tracking-wider">
                   Custo Médio de Produção
                 </p>
-                <p className="text-2xl sm:text-3xl font-bold text-[#35483E] mt-1">
+                <p className="text-2xl sm:text-3xl font-bold text-[#4A2832] mt-1">
                   {loading ? '...' : formatCurrency(avgRecipeCost)}
                 </p>
-                <p className="text-xs text-[#7B8880] mt-1">
+                <p className="text-xs text-[#8C7A82] mt-1">
                   Por fornada ou receita
                 </p>
               </div>
-              <div className="h-12 w-12 rounded-2xl bg-[#F0F5F2] flex items-center justify-center text-[#6D8576]">
+              <div className="h-12 w-12 rounded-2xl bg-[#FDF0F3] flex items-center justify-center text-[#C86D7F]">
                 <DollarSign className="h-6 w-6" />
               </div>
             </CardContent>
@@ -190,23 +188,23 @@ export default function DashboardPage() {
           {/* Receitas Atualizadas Recentemente (Col 2/3) */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-[#35483E] flex items-center gap-2">
-                <ChefHat className="h-5 w-5 text-[#6D8576]" />
+              <h2 className="text-lg font-semibold text-[#4A2832] flex items-center gap-2">
+                <ChefHat className="h-5 w-5 text-[#C86D7F]" />
                 Receitas & Preços Recentes
               </h2>
               <Link
                 href="/receitas"
-                className="text-xs font-medium text-[#6D8576] hover:underline flex items-center gap-0.5"
+                className="text-xs font-medium text-[#C86D7F] hover:underline flex items-center gap-0.5"
               >
                 Ver todas as receitas
                 <ArrowUpRight className="h-3.5 w-3.5" />
               </Link>
             </div>
 
-            <Card className="border-[#E8E3DB] bg-white">
-              <div className="divide-y divide-[#EFEBE4]">
+            <Card className="border-[#EFE4E6] bg-white">
+              <div className="divide-y divide-[#F5ECED]">
                 {recentRecipes.length === 0 ? (
-                  <div className="p-8 text-center text-sm text-[#738078]">
+                  <div className="p-8 text-center text-sm text-[#7C6970]">
                     Nenhuma receita cadastrada ainda.
                   </div>
                 ) : (
@@ -214,37 +212,37 @@ export default function DashboardPage() {
                     <Link
                       key={recipe.id}
                       href={`/receitas/${recipe.id}`}
-                      className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:bg-[#FAF8F5] transition-colors group"
+                      className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:bg-[#FDFBF9] transition-colors group"
                     >
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold text-base text-[#28362F] group-hover:text-[#6D8576] transition-colors">
+                          <span className="font-semibold text-base text-[#2E2226] group-hover:text-[#C86D7F] transition-colors">
                             {recipe.name}
                           </span>
                           <Badge variant="secondary" className="text-[10px]">
                             {recipe.yield_quantity} {recipe.yield_unit}
                           </Badge>
                         </div>
-                        <p className="text-xs text-[#7B8880]">
+                        <p className="text-xs text-[#8C7A82]">
                           Categoria: {recipe.category}
                         </p>
                       </div>
 
                       <div className="flex items-center gap-4 sm:gap-6 self-start sm:self-auto">
                         <div className="text-left sm:text-right">
-                          <p className="text-[11px] text-[#7A8880] uppercase tracking-wider">
+                          <p className="text-[11px] text-[#8C7A82] uppercase tracking-wider">
                             Custo de Produção
                           </p>
-                          <p className="text-sm font-semibold text-[#35483E]">
+                          <p className="text-sm font-semibold text-[#4A2832]">
                             {formatCurrency(breakdown.totalCost)}
                           </p>
                         </div>
 
                         <div className="text-left sm:text-right">
-                          <p className="text-[11px] text-[#7A8880] uppercase tracking-wider">
+                          <p className="text-[11px] text-[#8C7A82] uppercase tracking-wider">
                             Preço Sugerido
                           </p>
-                          <p className="text-sm font-bold text-[#6D8576]">
+                          <p className="text-sm font-bold text-[#C86D7F]">
                             {formatCurrency(breakdown.effectiveSalePrice)}
                           </p>
                         </div>
@@ -268,43 +266,43 @@ export default function DashboardPage() {
           {/* Ingredientes com Atualização Recente (Col 1/3) */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-[#35483E] flex items-center gap-2">
-                <Wheat className="h-5 w-5 text-[#6D8576]" />
+              <h2 className="text-lg font-semibold text-[#4A2832] flex items-center gap-2">
+                <Wheat className="h-5 w-5 text-[#C86D7F]" />
                 Preço de Ingredientes
               </h2>
               <Link
                 href="/ingredientes"
-                className="text-xs font-medium text-[#6D8576] hover:underline flex items-center gap-0.5"
+                className="text-xs font-medium text-[#C86D7F] hover:underline flex items-center gap-0.5"
               >
                 Gerenciar
                 <ArrowUpRight className="h-3.5 w-3.5" />
               </Link>
             </div>
 
-            <Card className="border-[#E8E3DB] bg-white">
-              <div className="divide-y divide-[#EFEBE4]">
+            <Card className="border-[#EFE4E6] bg-white">
+              <div className="divide-y divide-[#F5ECED]">
                 {recentIngredients.length === 0 ? (
-                  <div className="p-8 text-center text-sm text-[#738078]">
+                  <div className="p-8 text-center text-sm text-[#7C6970]">
                     Nenhum ingrediente cadastrado.
                   </div>
                 ) : (
                   recentIngredients.map((ing) => (
                     <div
                       key={ing.id}
-                      className="p-4 flex items-center justify-between gap-2 hover:bg-[#FAF8F5] transition-colors"
+                      className="p-4 flex items-center justify-between gap-2 hover:bg-[#FDFBF9] transition-colors"
                     >
                       <div className="min-w-0">
-                        <p className="font-medium text-sm text-[#28362F] truncate">
+                        <p className="font-medium text-sm text-[#2E2226] truncate">
                           {ing.name}
                         </p>
-                        <p className="text-[11px] text-[#7B8880]">
+                        <p className="text-[11px] text-[#8C7A82]">
                           Emb: {ing.package_quantity} {ing.package_unit} por{' '}
                           {formatCurrency(ing.package_price)}
                         </p>
                       </div>
 
                       <div className="text-right shrink-0">
-                        <span className="font-mono text-xs font-semibold text-[#35483E] bg-[#F0F5F2] px-2 py-1 rounded-lg">
+                        <span className="font-mono text-xs font-semibold text-[#8A3E50] bg-[#FDF0F3] px-2.5 py-1 rounded-lg border border-[#F7D8DF]">
                           {formatUnitCost(ing.cost_per_base_unit, ing.base_unit)}
                         </span>
                       </div>
@@ -315,11 +313,11 @@ export default function DashboardPage() {
             </Card>
 
             {/* Quick Helper Note for Confectioners */}
-            <div className="bg-[#EFF5F1] border border-[#D5E4DB] rounded-2xl p-4 flex items-start gap-3">
-              <Sparkles className="h-5 w-5 text-[#6D8576] shrink-0 mt-0.5" />
-              <div className="text-xs text-[#38493F] space-y-1">
+            <div className="bg-[#FDF0F3] border border-[#F7D8DF] rounded-2xl p-4 flex items-start gap-3">
+              <Sparkles className="h-5 w-5 text-[#C86D7F] shrink-0 mt-0.5" />
+              <div className="text-xs text-[#4A2832] space-y-1">
                 <p className="font-semibold">Atualização em tempo real</p>
-                <p className="text-[#59695F] leading-relaxed">
+                <p className="text-[#6E4F57] leading-relaxed">
                   Quando você atualiza o preço de compra de qualquer ingrediente, todas as receitas que o utilizam são recalculadas automaticamente.
                 </p>
               </div>

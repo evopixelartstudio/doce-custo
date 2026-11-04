@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CakeSlice, Lock, Mail, ArrowRight, KeyRound, Sparkles } from 'lucide-react';
+import { CakeSlice, Lock, Mail, ArrowRight, Sparkles } from 'lucide-react';
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -97,28 +97,28 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-[#FDFBF9] flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center space-y-2">
-          <div className="h-14 w-14 rounded-3xl bg-[#6D8576] flex items-center justify-center text-white shadow-md shadow-[#6D8576]/30">
+          <div className="h-14 w-14 rounded-3xl bg-gradient-to-br from-[#D97E90] to-[#C86D7F] flex items-center justify-center text-white shadow-md shadow-[#C86D7F]/30">
             <CakeSlice className="h-7 w-7" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#35483E]">
+          <h1 className="text-2xl font-bold tracking-tight text-[#4A2832]">
             DoceCusto
           </h1>
-          <p className="text-sm text-[#65736B]">
+          <p className="text-sm text-[#7C6970]">
             Gestão profissional de receitas, custos e precificação
           </p>
         </div>
 
         {/* Card */}
-        <Card className="border-[#E5E0D8] shadow-sm bg-white">
+        <Card className="border-[#EFE4E6] shadow-sm bg-white">
           <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-xl text-[#35483E]">
+            <CardTitle className="text-xl text-[#4A2832]">
               {showRecovery ? 'Recuperar Senha' : 'Acesso ao Sistema'}
             </CardTitle>
-            <CardDescription className="text-xs text-[#6A7870]">
+            <CardDescription className="text-xs text-[#7C6970]">
               {showRecovery
                 ? 'Digite o e-mail cadastrado para receber o link de redefinição de senha.'
                 : 'Uso individual. Insira suas credenciais de confeiteira.'}
@@ -129,8 +129,8 @@ export default function LoginPage() {
             {!showRecovery ? (
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#404D45] flex items-center gap-1.5">
-                    <Mail className="h-3.5 w-3.5 text-[#6D8576]" />
+                  <label className="text-xs font-semibold text-[#5E4850] flex items-center gap-1.5">
+                    <Mail className="h-3.5 w-3.5 text-[#C86D7F]" />
                     E-mail
                   </label>
                   <Input
@@ -144,14 +144,14 @@ export default function LoginPage() {
 
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-[#404D45] flex items-center gap-1.5">
-                      <Lock className="h-3.5 w-3.5 text-[#6D8576]" />
+                    <label className="text-xs font-semibold text-[#5E4850] flex items-center gap-1.5">
+                      <Lock className="h-3.5 w-3.5 text-[#C86D7F]" />
                       Senha
                     </label>
                     <button
                       type="button"
                       onClick={() => setShowRecovery(true)}
-                      className="text-xs text-[#6D8576] hover:underline font-medium"
+                      className="text-xs text-[#C86D7F] hover:underline font-medium"
                     >
                       Esqueceu a senha?
                     </button>
@@ -178,8 +178,8 @@ export default function LoginPage() {
             ) : (
               <form onSubmit={handlePasswordRecovery} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#404D45] flex items-center gap-1.5">
-                    <Mail className="h-3.5 w-3.5 text-[#6D8576]" />
+                  <label className="text-xs font-semibold text-[#5E4850] flex items-center gap-1.5">
+                    <Mail className="h-3.5 w-3.5 text-[#C86D7F]" />
                     E-mail cadastrado
                   </label>
                   <Input
@@ -212,17 +212,17 @@ export default function LoginPage() {
             )}
 
             {/* Quick Demo Access Button */}
-            <div className="pt-2 border-t border-[#EAE5DC] flex flex-col space-y-2">
+            <div className="pt-2 border-t border-[#EFE4E6] flex flex-col space-y-2">
               <Button
                 type="button"
                 variant="secondary"
                 onClick={handleDemoAccess}
-                className="w-full text-xs font-medium text-[#35483E]"
+                className="w-full text-xs font-medium text-[#4A2832]"
               >
-                <Sparkles className="h-3.5 w-3.5 text-[#6D8576] mr-1.5" />
+                <Sparkles className="h-3.5 w-3.5 text-[#C86D7F] mr-1.5" />
                 Acessar Demonstração (Sem Login)
               </Button>
-              <p className="text-[11px] text-center text-[#7A8780] leading-tight">
+              <p className="text-[11px] text-center text-[#8C7A82] leading-tight">
                 Sistema seguro com isolamento por usuário e proteção RLS. Não há auto-cadastro público.
               </p>
             </div>

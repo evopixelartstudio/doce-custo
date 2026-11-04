@@ -149,3 +149,4 @@ export interface SimulationResult {
   newCostPerUnit: number;
   suggestedSalePrice: number;
 }
+

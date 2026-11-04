@@ -76,7 +76,7 @@ function FichaTecnicaContent({
 
   if (loading || !recipe) {
     return (
-      <div className="p-12 text-center text-sm text-[#738078]">
+      <div className="p-12 text-center text-sm text-[#7C6970]">
         Carregando ficha técnica...
       </div>
     );
@@ -102,19 +102,19 @@ function FichaTecnicaContent({
         <div className="flex items-center gap-3">
           <Link href="/receitas">
             <Button variant="ghost" size="icon" className="rounded-xl">
-              <ArrowLeft className="h-5 w-5 text-[#35483E]" />
+              <ArrowLeft className="h-5 w-5 text-[#4A2832]" />
             </Button>
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-bold text-[#35483E] tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-bold text-[#4A2832] tracking-tight">
                 Ficha Técnica
               </h1>
               <Badge variant="secondary" className="text-xs">
                 {recipe.category}
               </Badge>
             </div>
-            <p className="text-xs text-[#6C7A72]">
+            <p className="text-xs text-[#7C6970]">
               Atualizada em:{' '}
               {new Date(recipe.updated_at).toLocaleDateString('pt-BR', {
                 day: '2-digit',
@@ -128,7 +128,7 @@ function FichaTecnicaContent({
         <div className="flex items-center flex-wrap gap-2">
           <Link href={`/simulador?recipeId=${recipe.id}`}>
             <Button variant="outline" size="sm" className="font-medium">
-              <Calculator className="h-4 w-4 mr-1 text-[#6D8576]" />
+              <Calculator className="h-4 w-4 mr-1 text-[#C86D7F]" />
               Simular Lote
             </Button>
           </Link>
@@ -158,27 +158,27 @@ function FichaTecnicaContent({
       </div>
 
       {/* Printable Technical Spec Document Container */}
-      <div className="print-container bg-white border border-[#E7E2D8] rounded-3xl p-6 sm:p-10 shadow-sm space-y-8">
+      <div className="print-container bg-white border border-[#EFE4E6] rounded-3xl p-6 sm:p-10 shadow-sm space-y-8">
         {/* Document Header */}
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between border-b border-[#EAE5DC] pb-6 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between border-b border-[#F5ECED] pb-6 gap-4">
           <div className="space-y-1.5">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#6D8576] uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#C86D7F] uppercase tracking-wider">
               <span>{settings?.business_name || 'Confeitaria Artesanal'}</span>
               <span>•</span>
               <span>Ficha Técnica Oficial</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#35483E]">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#4A2832]">
               {recipe.name}
             </h2>
             {recipe.description && (
-              <p className="text-sm text-[#6A7870] max-w-2xl leading-relaxed">
+              <p className="text-sm text-[#7C6970] max-w-2xl leading-relaxed">
                 {recipe.description}
               </p>
             )}
           </div>
 
           {recipe.photo_url && (
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border border-[#E5E0D8] shrink-0 bg-[#FAF8F5]">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border border-[#EFE4E6] shrink-0 bg-[#FDFBF9]">
               <img
                 src={recipe.photo_url}
                 alt={recipe.name}
@@ -189,39 +189,39 @@ function FichaTecnicaContent({
         </div>
 
         {/* Quick Metrics Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-2xl bg-[#FAF8F5] border border-[#E7E2D8] text-center">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-2xl bg-[#FDFBF9] border border-[#EFE4E6] text-center">
           <div>
-            <span className="text-[10px] uppercase font-bold text-[#7E8B83] block">
+            <span className="text-[10px] uppercase font-bold text-[#8C7A82] block">
               Rendimento
             </span>
-            <span className="text-base font-bold text-[#35483E]">
+            <span className="text-base font-bold text-[#4A2832]">
               {recipe.yield_quantity} {recipe.yield_unit}
             </span>
           </div>
 
           <div>
-            <span className="text-[10px] uppercase font-bold text-[#7E8B83] block">
+            <span className="text-[10px] uppercase font-bold text-[#8C7A82] block">
               Tempo de Preparo
             </span>
-            <span className="text-base font-bold text-[#35483E]">
+            <span className="text-base font-bold text-[#4A2832]">
               {recipe.prep_time_minutes ? `${recipe.prep_time_minutes} min` : 'N/I'}
             </span>
           </div>
 
           <div>
-            <span className="text-[10px] uppercase font-bold text-[#7E8B83] block">
+            <span className="text-[10px] uppercase font-bold text-[#8C7A82] block">
               Custo Total
             </span>
-            <span className="text-base font-bold text-[#35483E]">
+            <span className="text-base font-bold text-[#4A2832]">
               {formatCurrency(breakdown.totalCost)}
             </span>
           </div>
 
           <div>
-            <span className="text-[10px] uppercase font-bold text-[#7E8B83] block">
+            <span className="text-[10px] uppercase font-bold text-[#8C7A82] block">
               Custo por {recipe.yield_unit.replace(/s$/, '')}
             </span>
-            <span className="text-base font-bold text-[#6D8576]">
+            <span className="text-base font-bold text-[#C86D7F]">
               {formatCurrency(breakdown.costPerUnit)}
             </span>
           </div>
@@ -229,14 +229,14 @@ function FichaTecnicaContent({
 
         {/* Section: Ingredients and Sub-recipes Table */}
         <div className="space-y-3">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-[#35483E] flex items-center gap-2">
-            <Wheat className="h-4 w-4 text-[#6D8576]" />
+          <h3 className="text-sm font-bold uppercase tracking-wider text-[#4A2832] flex items-center gap-2">
+            <Wheat className="h-4 w-4 text-[#C86D7F]" />
             Composição de Ingredientes e Sub-Receitas
           </h3>
 
-          <div className="border border-[#E7E2D8] rounded-2xl overflow-hidden">
+          <div className="border border-[#EFE4E6] rounded-2xl overflow-hidden">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#FAF8F5] border-b border-[#EAE5DC] text-[10px] font-bold text-[#67756D] uppercase tracking-wider">
+              <thead className="bg-[#FDFBF9] border-b border-[#EFE4E6] text-[10px] font-bold text-[#7C6970] uppercase tracking-wider">
                 <tr>
                   <th className="py-2.5 px-4">Tipo</th>
                   <th className="py-2.5 px-4">Item / Ingrediente</th>
@@ -245,7 +245,7 @@ function FichaTecnicaContent({
                   <th className="py-2.5 px-4 text-right">Custo Proporcional</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#EFEBE4]">
+              <tbody className="divide-y divide-[#F5ECED]">
                 {items.map((item, idx) => {
                   const isIngredient = item.item_type === 'ingredient';
                   const itemName = isIngredient
@@ -259,35 +259,35 @@ function FichaTecnicaContent({
                     : '—';
 
                   return (
-                    <tr key={idx} className="hover:bg-[#FAF8F5]/60">
+                    <tr key={idx} className="hover:bg-[#FDFBF9]/80">
                       <td className="py-3 px-4">
                         <span
                           className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase ${
                             isIngredient
-                              ? 'bg-[#EFF5F1] text-[#283B31]'
-                              : 'bg-[#F2EFEA] text-[#55635B]'
+                              ? 'bg-[#FDF0F3] text-[#8A3E50]'
+                              : 'bg-[#F8EEF0] text-[#6E4F57]'
                           }`}
                         >
                           {isIngredient ? 'Ingrediente' : 'Sub-Receita'}
                         </span>
                       </td>
-                      <td className="py-3 px-4 font-semibold text-[#28362F]">
+                      <td className="py-3 px-4 font-semibold text-[#2E2226]">
                         {itemName}
                       </td>
                       <td className="py-3 px-4 font-mono">
                         {formatQuantity(item.quantity)} {item.unit}
                       </td>
-                      <td className="py-3 px-4 font-mono text-[#6A7870]">
+                      <td className="py-3 px-4 font-mono text-[#7C6970]">
                         {unitCostStr}
                       </td>
-                      <td className="py-3 px-4 text-right font-mono font-bold text-[#35483E]">
+                      <td className="py-3 px-4 text-right font-mono font-bold text-[#4A2832]">
                         {formatCurrency(item.calculated_cost || 0)}
                       </td>
                     </tr>
                   );
                 })}
               </tbody>
-              <tfoot className="bg-[#FAF8F5] font-bold text-[#35483E] border-t border-[#EAE5DC]">
+              <tfoot className="bg-[#FDFBF9] font-bold text-[#4A2832] border-t border-[#EFE4E6]">
                 <tr>
                   <td colSpan={4} className="py-2.5 px-4 text-right text-xs">
                     Subtotal Ingredientes:
@@ -304,40 +304,40 @@ function FichaTecnicaContent({
         {/* Section: Additional Costs */}
         {additionalCosts.length > 0 && (
           <div className="space-y-3">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-[#35483E] flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-[#6D8576]" />
+            <h3 className="text-sm font-bold uppercase tracking-wider text-[#4A2832] flex items-center gap-2">
+              <DollarSign className="h-4 w-4 text-[#C86D7F]" />
               Custos Adicionais da Produção
             </h3>
 
-            <div className="border border-[#E7E2D8] rounded-2xl overflow-hidden">
+            <div className="border border-[#EFE4E6] rounded-2xl overflow-hidden">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#FAF8F5] border-b border-[#EAE5DC] text-[10px] font-bold text-[#67756D] uppercase tracking-wider">
+                <thead className="bg-[#FDFBF9] border-b border-[#EFE4E6] text-[10px] font-bold text-[#7C6970] uppercase tracking-wider">
                   <tr>
                     <th className="py-2.5 px-4">Descrição</th>
                     <th className="py-2.5 px-4">Natureza do Custo</th>
                     <th className="py-2.5 px-4 text-right">Valor</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#EFEBE4]">
+                <tbody className="divide-y divide-[#F5ECED]">
                   {additionalCosts.map((cost, idx) => (
-                    <tr key={idx} className="hover:bg-[#FAF8F5]/60">
-                      <td className="py-3 px-4 font-medium text-[#28362F]">
+                    <tr key={idx} className="hover:bg-[#FDFBF9]/80">
+                      <td className="py-3 px-4 font-medium text-[#2E2226]">
                         {cost.description}
                       </td>
-                      <td className="py-3 px-4 text-[#6A7870]">
+                      <td className="py-3 px-4 text-[#7C6970]">
                         {cost.is_proportional ? (
-                          <span className="text-[#35483E]">Proporcional ao rendimento</span>
+                          <span className="text-[#4A2832]">Proporcional ao rendimento</span>
                         ) : (
-                          <span className="text-[#7A8880]">Fixo por fornada</span>
+                          <span className="text-[#8C7A82]">Fixo por fornada</span>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-right font-mono font-bold text-[#35483E]">
+                      <td className="py-3 px-4 text-right font-mono font-bold text-[#4A2832]">
                         {formatCurrency(cost.amount)}
                       </td>
                     </tr>
                   ))}
                 </tbody>
-                <tfoot className="bg-[#FAF8F5] font-bold text-[#35483E] border-t border-[#EAE5DC]">
+                <tfoot className="bg-[#FDFBF9] font-bold text-[#4A2832] border-t border-[#EFE4E6]">
                   <tr>
                     <td colSpan={2} className="py-2.5 px-4 text-right text-xs">
                       Subtotal Custos Adicionais:
@@ -353,8 +353,8 @@ function FichaTecnicaContent({
         )}
 
         {/* Section: Pricing & Sale Margins Breakdown */}
-        <div className="p-6 rounded-2xl bg-[#EFF5F1] border border-[#D5E3DB] space-y-4">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-[#283B31] flex items-center justify-between">
+        <div className="p-6 rounded-2xl bg-[#FDF0F3] border border-[#F7D8DF] space-y-4">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-[#4A2832] flex items-center justify-between">
             <span>Análise Financeira & Precificação</span>
             <Badge variant="default" className="text-[10px] uppercase">
               {recipe.pricing_method === 'margin' ? 'Margem sobre Preço' : 'Markup'}
@@ -362,58 +362,58 @@ function FichaTecnicaContent({
           </h3>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-            <div className="bg-white p-3 rounded-xl border border-[#D5E3DB]">
-              <span className="text-[10px] uppercase font-semibold text-[#7E8B83] block">
+            <div className="bg-white p-3 rounded-xl border border-[#F7D8DF]">
+              <span className="text-[10px] uppercase font-semibold text-[#8C7A82] block">
                 Custo Total
               </span>
-              <span className="text-sm font-bold font-mono text-[#35483E]">
+              <span className="text-sm font-bold font-mono text-[#4A2832]">
                 {formatCurrency(breakdown.totalCost)}
               </span>
             </div>
 
-            <div className="bg-white p-3 rounded-xl border border-[#D5E3DB]">
-              <span className="text-[10px] uppercase font-semibold text-[#7E8B83] block">
+            <div className="bg-white p-3 rounded-xl border border-[#F7D8DF]">
+              <span className="text-[10px] uppercase font-semibold text-[#8C7A82] block">
                 Preço Sugerido
               </span>
-              <span className="text-sm font-bold font-mono text-[#6D8576]">
+              <span className="text-sm font-bold font-mono text-[#C86D7F]">
                 {formatCurrency(breakdown.suggestedSalePrice)}
               </span>
             </div>
 
-            <div className="bg-white p-3 rounded-xl border border-[#D5E3DB]">
-              <span className="text-[10px] uppercase font-semibold text-[#7E8B83] block">
+            <div className="bg-white p-3 rounded-xl border border-[#F7D8DF]">
+              <span className="text-[10px] uppercase font-semibold text-[#8C7A82] block">
                 Preço de Venda
               </span>
-              <span className="text-sm font-bold font-mono text-[#28362F]">
+              <span className="text-sm font-bold font-mono text-[#2E2226]">
                 {formatCurrency(breakdown.effectiveSalePrice)}
               </span>
             </div>
 
-            <div className="bg-white p-3 rounded-xl border border-[#D5E3DB]">
-              <span className="text-[10px] uppercase font-semibold text-[#7E8B83] block">
+            <div className="bg-white p-3 rounded-xl border border-[#F7D8DF]">
+              <span className="text-[10px] uppercase font-semibold text-[#8C7A82] block">
                 Lucro Bruto
               </span>
-              <span className="text-sm font-bold font-mono text-[#477A57]">
+              <span className="text-sm font-bold font-mono text-[#2D6A4F]">
                 + {formatCurrency(breakdown.estimatedGrossProfit)}
               </span>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs text-[#526359] border-t border-[#D5E3DB] pt-3 gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs text-[#6E4F57] border-t border-[#F7D8DF] pt-3 gap-2">
             <div>
               <span>Margem de Lucro Efetiva: </span>
-              <strong className="text-sm font-mono text-[#283B31]">
+              <strong className="text-sm font-mono text-[#4A2832]">
                 {breakdown.estimatedProfitMargin.toFixed(1)}%
               </strong>
               {recipe.card_fee_percentage > 0 && (
-                <span className="ml-2 text-[11px] text-[#738279]">
+                <span className="ml-2 text-[11px] text-[#8C7A82]">
                   (Já deduzida taxa de cartão de {recipe.card_fee_percentage}%)
                 </span>
               )}
             </div>
 
             {breakdown.isMarginBelowTarget && (
-              <div className="text-[#9A5A0A] font-semibold flex items-center gap-1">
+              <div className="text-[#A6601A] font-semibold flex items-center gap-1">
                 <AlertTriangle className="h-4 w-4" />
                 Margem abaixo da meta de {recipe.target_margin_percentage}%!
               </div>
@@ -422,7 +422,7 @@ function FichaTecnicaContent({
         </div>
 
         {/* Document Footer (Visible in print) */}
-        <div className="border-t border-[#EAE5DC] pt-4 flex items-center justify-between text-[10px] text-[#8C9890]">
+        <div className="border-t border-[#F5ECED] pt-4 flex items-center justify-between text-[10px] text-[#968289]">
           <span>DoceCusto — Sistema de Gestão Confeitaria</span>
           <span>Impresso em: {new Date().toLocaleDateString('pt-BR')}</span>
         </div>
@@ -440,7 +440,7 @@ export default function FichaTecnicaPage({
     <AppShell>
       <Suspense
         fallback={
-          <div className="p-12 text-center text-sm text-[#738078]">
+          <div className="p-12 text-center text-sm text-[#7C6970]">
             Carregando...
           </div>
         }

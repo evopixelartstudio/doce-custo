@@ -1,28 +1,28 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FAF8F5;
-  --foreground: #232C27;
+  --background: #FDFBF9;
+  --foreground: #2E2226;
   --card: #FFFFFF;
-  --card-foreground: #232C27;
+  --card-foreground: #2E2226;
   --popover: #FFFFFF;
-  --popover-foreground: #232C27;
-  --primary: #6D8576;
+  --popover-foreground: #2E2226;
+  --primary: #C86D7F;
   --primary-foreground: #FFFFFF;
-  --primary-hover: #5B7264;
-  --primary-light: #F0F5F2;
-  --title: #35483E;
-  --secondary: #F0ECE4;
-  --secondary-foreground: #35483E;
-  --muted: #F2EFEA;
-  --muted-foreground: #69766F;
-  --accent: #E8F0EB;
-  --accent-foreground: #283B31;
-  --destructive: #C85A54;
+  --primary-hover: #B2586A;
+  --primary-light: #FDF0F3;
+  --title: #4A2832;
+  --secondary: #F8EEF0;
+  --secondary-foreground: #4A2832;
+  --muted: #F8F2F3;
+  --muted-foreground: #7C6970;
+  --accent: #FDF0F3;
+  --accent-foreground: #8A3E50;
+  --destructive: #C44D56;
   --destructive-foreground: #FFFFFF;
-  --border: #E6E1D8;
-  --input: #E6E1D8;
-  --ring: #6D8576;
+  --border: #EFE4E6;
+  --input: #EFE4E6;
+  --ring: #C86D7F;
   --radius: 0.75rem;
 }
 
@@ -67,11 +67,11 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D7D2C8;
+  background: #E8D6DA;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #BAB4A9;
+  background: #D2BAC0;
 }
 
 /* Print layout for A4 technical sheet */

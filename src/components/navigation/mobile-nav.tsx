@@ -46,19 +46,19 @@ export function MobileNav() {
   return (
     <>
       {/* Top Mobile Bar */}
-      <header className="no-print md:hidden flex items-center justify-between px-4 py-3.5 border-b border-[#E7E2D8] bg-[#FAF8F5]/95 backdrop-blur-sm sticky top-0 z-30">
+      <header className="no-print md:hidden flex items-center justify-between px-4 py-3.5 border-b border-[#EFE4E6] bg-[#FDFBF9]/95 backdrop-blur-sm sticky top-0 z-30">
         <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-xl bg-[#6D8576] flex items-center justify-center text-white shadow-sm">
+          <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#D97E90] to-[#C86D7F] flex items-center justify-center text-white shadow-sm">
             <CakeSlice className="h-4 w-4" />
           </div>
-          <span className="font-semibold text-base text-[#35483E]">
+          <span className="font-semibold text-base text-[#4A2832]">
             DoceCusto
           </span>
         </div>
       </header>
 
       {/* Bottom Thumb Navigation Bar */}
-      <nav className="no-print md:hidden fixed bottom-0 left-0 right-0 z-30 border-t border-[#E7E2D8] bg-[#FAF8F5]/95 backdrop-blur-md px-3 py-1.5 flex items-center justify-around pb-safe">
+      <nav className="no-print md:hidden fixed bottom-0 left-0 right-0 z-30 border-t border-[#EFE4E6] bg-[#FDFBF9]/95 backdrop-blur-md px-3 py-1.5 flex items-center justify-around pb-safe">
         {mobileNavItems.map((item) => {
           const isActive =
             item.href === '/dashboard'
@@ -73,14 +73,14 @@ export function MobileNav() {
               className={cn(
                 'flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all',
                 isActive
-                  ? 'text-[#35483E] font-semibold'
-                  : 'text-[#6D7A72] hover:text-[#35483E]'
+                  ? 'text-[#4A2832] font-semibold'
+                  : 'text-[#7C6970] hover:text-[#4A2832]'
               )}
             >
               <div
                 className={cn(
                   'p-1 rounded-lg transition-colors',
-                  isActive ? 'bg-[#E3EDE6] text-[#35483E]' : ''
+                  isActive ? 'bg-[#FDF0F3] text-[#C86D7F]' : ''
                 )}
               >
                 <Icon className="h-5 w-5" />

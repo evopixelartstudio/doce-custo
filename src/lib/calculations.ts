@@ -624,3 +624,4 @@ export function formatPercent(
     maximumFractionDigits: decimals,
   }).format(d.toNumber())}%`;
 }
+

@@ -9,14 +9,12 @@ import {
   Copy,
   Archive,
   Edit2,
-  Printer,
   Calculator,
   ChefHat,
   Clock,
-  Sparkles,
 } from 'lucide-react';
 import { AppShell } from '@/components/layout/app-shell';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -96,10 +94,10 @@ export default function ReceitasPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#35483E] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#4A2832] tracking-tight">
               Receitas & Fichas Técnicas
             </h1>
-            <p className="text-sm text-[#6C7A72]">
+            <p className="text-sm text-[#7C6970]">
               Fórmulas, ingredientes, sub-receitas e custos calculados em tempo real.
             </p>
           </div>
@@ -107,7 +105,7 @@ export default function ReceitasPage() {
           <div className="flex items-center gap-2">
             <Link href="/simulador">
               <Button variant="outline" className="shadow-sm">
-                <Calculator className="h-4 w-4 mr-1.5 text-[#6D8576]" />
+                <Calculator className="h-4 w-4 mr-1.5 text-[#C86D7F]" />
                 Simulador de Fornada
               </Button>
             </Link>
@@ -123,7 +121,7 @@ export default function ReceitasPage() {
         {/* Filters */}
         <div className="space-y-3">
           <div className="relative max-w-md">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8C9890]" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A8989E]" />
             <Input
               type="text"
               placeholder="Buscar receita por nome..."
@@ -138,8 +136,8 @@ export default function ReceitasPage() {
               onClick={() => setSelectedCategory('todas')}
               className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
                 selectedCategory === 'todas'
-                  ? 'bg-[#6D8576] text-white shadow-sm'
-                  : 'bg-white text-[#4A574F] border border-[#E7E2D8] hover:bg-[#F2EFEA]'
+                  ? 'bg-[#C86D7F] text-white shadow-sm'
+                  : 'bg-white text-[#5E4850] border border-[#EFE4E6] hover:bg-[#F8EEF0]'
               }`}
             >
               Todas as Categorias
@@ -150,8 +148,8 @@ export default function ReceitasPage() {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
                   selectedCategory === cat
-                    ? 'bg-[#6D8576] text-white shadow-sm'
-                    : 'bg-white text-[#4A574F] border border-[#E7E2D8] hover:bg-[#F2EFEA]'
+                    ? 'bg-[#C86D7F] text-white shadow-sm'
+                    : 'bg-white text-[#5E4850] border border-[#EFE4E6] hover:bg-[#F8EEF0]'
                 }`}
               >
                 {cat}
@@ -162,13 +160,13 @@ export default function ReceitasPage() {
 
         {/* Recipes Grid */}
         {loading ? (
-          <div className="p-12 text-center text-sm text-[#738078]">
+          <div className="p-12 text-center text-sm text-[#7C6970]">
             Carregando receitas...
           </div>
         ) : filtered.length === 0 ? (
-          <Card className="border-[#E8E3DB] bg-white p-12 text-center space-y-3">
-            <ChefHat className="h-10 w-10 text-[#A6B3AC] mx-auto" />
-            <p className="text-sm font-medium text-[#46534C]">
+          <Card className="border-[#EFE4E6] bg-white p-12 text-center space-y-3">
+            <ChefHat className="h-10 w-10 text-[#C9B3B8] mx-auto" />
+            <p className="text-sm font-medium text-[#5E4850]">
               Nenhuma receita encontrada.
             </p>
             <Link href="/receitas/nova">
@@ -191,7 +189,7 @@ export default function ReceitasPage() {
               return (
                 <Card
                   key={recipe.id}
-                  className="border-[#E8E3DB] bg-white flex flex-col justify-between overflow-hidden group hover:border-[#CBD8D0] transition-all"
+                  className="border-[#EFE4E6] bg-white flex flex-col justify-between overflow-hidden group hover:border-[#E2CBD0] transition-all"
                 >
                   <div className="p-5 space-y-3">
                     <div className="flex items-start justify-between gap-2">
@@ -199,7 +197,7 @@ export default function ReceitasPage() {
                         <Badge variant="secondary" className="text-[10px] mb-1.5">
                           {recipe.category || 'Geral'}
                         </Badge>
-                        <h2 className="text-base font-bold text-[#28362F] group-hover:text-[#6D8576] transition-colors leading-snug">
+                        <h2 className="text-base font-bold text-[#2E2226] group-hover:text-[#C86D7F] transition-colors leading-snug">
                           <Link href={`/receitas/${recipe.id}`}>
                             {recipe.name}
                           </Link>
@@ -217,17 +215,17 @@ export default function ReceitasPage() {
                     </div>
 
                     {recipe.description && (
-                      <p className="text-xs text-[#738078] line-clamp-2 leading-relaxed">
+                      <p className="text-xs text-[#7C6970] line-clamp-2 leading-relaxed">
                         {recipe.description}
                       </p>
                     )}
 
-                    <div className="flex items-center gap-4 text-xs text-[#6A7870] pt-1">
+                    <div className="flex items-center gap-4 text-xs text-[#7C6970] pt-1">
                       <span className="font-medium">
                         Rendimento: {recipe.yield_quantity} {recipe.yield_unit}
                       </span>
                       {recipe.prep_time_minutes && (
-                        <span className="flex items-center gap-1 text-[#8C9890]">
+                        <span className="flex items-center gap-1 text-[#968289]">
                           <Clock className="h-3.5 w-3.5" />
                           {recipe.prep_time_minutes} min
                         </span>
@@ -235,27 +233,27 @@ export default function ReceitasPage() {
                     </div>
 
                     {/* Cost Metrics Box */}
-                    <div className="bg-[#FAF8F5] border border-[#EBE6DD] rounded-xl p-3 grid grid-cols-2 gap-2 text-center">
+                    <div className="bg-[#FDFBF9] border border-[#EFE4E6] rounded-xl p-3 grid grid-cols-2 gap-2 text-center">
                       <div>
-                        <span className="text-[10px] uppercase font-semibold text-[#7E8B83] block">
+                        <span className="text-[10px] uppercase font-semibold text-[#8C7A82] block">
                           Custo Total
                         </span>
-                        <span className="text-sm font-bold text-[#35483E]">
+                        <span className="text-sm font-bold text-[#4A2832]">
                           {formatCurrency(breakdown.totalCost)}
                         </span>
-                        <span className="text-[10px] text-[#86948C] block">
+                        <span className="text-[10px] text-[#968289] block">
                           ({formatCurrency(breakdown.costPerUnit)}/un)
                         </span>
                       </div>
 
-                      <div className="border-l border-[#EBE6DD] pl-2">
-                        <span className="text-[10px] uppercase font-semibold text-[#7E8B83] block">
+                      <div className="border-l border-[#EFE4E6] pl-2">
+                        <span className="text-[10px] uppercase font-semibold text-[#8C7A82] block">
                           Preço de Venda
                         </span>
-                        <span className="text-sm font-bold text-[#6D8576]">
+                        <span className="text-sm font-bold text-[#C86D7F]">
                           {formatCurrency(breakdown.effectiveSalePrice)}
                         </span>
-                        <span className="text-[10px] text-[#477A57] font-medium block">
+                        <span className="text-[10px] text-[#2D6A4F] font-medium block">
                           + {formatCurrency(breakdown.estimatedGrossProfit)} lucro
                         </span>
                       </div>
@@ -263,10 +261,10 @@ export default function ReceitasPage() {
                   </div>
 
                   {/* Actions Toolbar */}
-                  <div className="p-3 bg-[#FAF8F5]/60 border-t border-[#EFEBE4] flex items-center justify-between gap-1 text-xs">
+                  <div className="p-3 bg-[#FDFBF9]/80 border-t border-[#F5ECED] flex items-center justify-between gap-1 text-xs">
                     <Link href={`/receitas/${recipe.id}`}>
                       <Button variant="ghost" size="sm" className="h-8 text-xs font-medium">
-                        <BookOpenText className="h-3.5 w-3.5 mr-1 text-[#6D8576]" />
+                        <BookOpenText className="h-3.5 w-3.5 mr-1 text-[#C86D7F]" />
                         Ficha Técnica
                       </Button>
                     </Link>
@@ -275,7 +273,7 @@ export default function ReceitasPage() {
                       <button
                         title="Duplicar receita"
                         onClick={() => handleDuplicate(recipe)}
-                        className="p-1.5 rounded-lg text-[#66746C] hover:text-[#35483E] hover:bg-[#EFECE5] transition-colors"
+                        className="p-1.5 rounded-lg text-[#7C6970] hover:text-[#4A2832] hover:bg-[#F8EEF0] transition-colors"
                       >
                         <Copy className="h-3.5 w-3.5" />
                       </button>
@@ -283,7 +281,7 @@ export default function ReceitasPage() {
                       <Link
                         href={`/receitas/${recipe.id}/editar`}
                         title="Editar receita"
-                        className="p-1.5 rounded-lg text-[#6D8576] hover:text-[#52685B] hover:bg-[#EFF5F1] transition-colors"
+                        className="p-1.5 rounded-lg text-[#C86D7F] hover:text-[#B2586A] hover:bg-[#FDF0F3] transition-colors"
                       >
                         <Edit2 className="h-3.5 w-3.5" />
                       </Link>
@@ -291,7 +289,7 @@ export default function ReceitasPage() {
                       <button
                         title="Arquivar receita"
                         onClick={() => handleArchive(recipe)}
-                        className="p-1.5 rounded-lg text-[#A8726F] hover:text-[#8C3A35] hover:bg-[#FBEBEA] transition-colors"
+                        className="p-1.5 rounded-lg text-[#A82B35] hover:bg-[#FDF2F3] transition-colors"
                       >
                         <Archive className="h-3.5 w-3.5" />
                       </button>

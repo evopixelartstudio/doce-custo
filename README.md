@@ -6,13 +6,14 @@ Aplicação web completa desenvolvida com Next.js (App Router), TypeScript, Tail
 
 ## 🎨 Identidade Visual e Experiência
 
-- **Fundo:** Creme muito claro (`#FAF8F5`)
-- **Cor Principal:** Verde sálvia (`#6D8576`)
-- **Títulos e Destaques:** Verde escuro (`#35483E`)
-- **Superfícies e Cartões:** Branco puro (`#FFFFFF`) com bordas suaves e cantos arredondados
-- **Tipografia:** Inter
-- **Navegação:** Sidebar completa no desktop e barra inferior/menu compacto em dispositivos móveis
-- **Botões Grandes & Interface Tátil:** Desenvolvida para uso prático durante a rotina de produção da cozinha
+- **Fundo:** Creme de baunilha suave e acolhedor (`#FDFBF9`)
+- **Cor Principal:** Rosa quartzo / Rose Gold elegante (`#C86D7F`)
+- **Títulos e Destaques:** Vinho framboesa nobre e sofisticado (`#4A2832`)
+- **Detalhes de Destaque:** Tons suaves de rosé bebê (`#FDF0F3`) e verde menta para lucros
+- **Superfícies e Cartões:** Branco puro (`#FFFFFF`) com bordas suaves (`#EFE4E6`) e cantos arredondados
+- **Tipografia:** Inter com alta legibilidade
+- **Navegação:** Sidebar completa no desktop e barra inferior / menu compacto em dispositivos móveis
+- **Botões Grandes & Interface Tátil:** Desenvolvida para uso prático durante a rotina de produção da confeiteira
 
 ---
 

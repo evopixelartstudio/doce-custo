@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import {
-  Settings,
   Save,
   Building,
   DollarSign,
@@ -11,8 +10,6 @@ import {
   Trash2,
   Lock,
   KeyRound,
-  ShieldCheck,
-  Sparkles,
 } from 'lucide-react';
 import { AppShell } from '@/components/layout/app-shell';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -24,7 +21,6 @@ import type { UserSettings, PricingMethod } from '@/lib/types';
 import { toast } from 'sonner';
 
 export default function ConfiguracoesPage() {
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   // Business and Pricing Defaults
@@ -62,8 +58,8 @@ export default function ConfiguracoesPage() {
             is_proportional: c.is_proportional,
           }))
         );
-      } finally {
-        setLoading(false);
+      } catch {
+        // handled gracefully
       }
     }
     load();
@@ -156,26 +152,26 @@ export default function ConfiguracoesPage() {
     <AppShell>
       <div className="max-w-3xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#35483E] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#4A2832] tracking-tight">
             Configurações do Negócio
           </h1>
-          <p className="text-sm text-[#6C7A72]">
+          <p className="text-sm text-[#7C6970]">
             Defina os padrões de margem, taxas e custos que serão pré-carregados ao criar novas receitas.
           </p>
         </div>
 
         <form onSubmit={handleSaveSettings} className="space-y-6">
           {/* Business Info */}
-          <Card className="border-[#E8E3DB] bg-white">
+          <Card className="border-[#EFE4E6] bg-white">
             <CardHeader className="pb-4">
-              <CardTitle className="text-base text-[#35483E] flex items-center gap-2">
-                <Building className="h-5 w-5 text-[#6D8576]" />
+              <CardTitle className="text-base text-[#4A2832] flex items-center gap-2">
+                <Building className="h-5 w-5 text-[#C86D7F]" />
                 Identificação do Ateliê / Confeitaria
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Nome da Confeitaria / Marca
                 </label>
                 <Input
@@ -185,7 +181,7 @@ export default function ConfiguracoesPage() {
                   onChange={(e) => setBusinessName(e.target.value)}
                   required
                 />
-                <span className="text-[11px] text-[#7A8780]">
+                <span className="text-[11px] text-[#8C7A82]">
                   Este nome será exibido nos cabeçalhos e nas fichas técnicas impressas.
                 </span>
               </div>
@@ -193,13 +189,13 @@ export default function ConfiguracoesPage() {
           </Card>
 
           {/* Pricing Defaults */}
-          <Card className="border-[#E8E3DB] bg-white">
+          <Card className="border-[#EFE4E6] bg-white">
             <CardHeader className="pb-4">
-              <CardTitle className="text-base text-[#35483E] flex items-center gap-2">
-                <Percent className="h-5 w-5 text-[#6D8576]" />
+              <CardTitle className="text-base text-[#4A2832] flex items-center gap-2">
+                <Percent className="h-5 w-5 text-[#C86D7F]" />
                 Padrões de Precificação e Margem
               </CardTitle>
-              <CardDescription className="text-xs">
+              <CardDescription className="text-xs text-[#7C6970]">
                 Valores sugeridos automaticamente ao cadastrar uma nova receita.
               </CardDescription>
             </CardHeader>
@@ -207,7 +203,7 @@ export default function ConfiguracoesPage() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#38463E]">
+                  <label className="text-xs font-semibold text-[#5E4850]">
                     Método Padrão
                   </label>
                   <select
@@ -215,7 +211,7 @@ export default function ConfiguracoesPage() {
                     onChange={(e) =>
                       setDefaultPricingMethod(e.target.value as PricingMethod)
                     }
-                    className="flex h-11 w-full rounded-xl border border-[#E5E0D8] bg-white px-3.5 py-2 text-sm text-[#232C27] focus:border-[#6D8576] focus:outline-none"
+                    className="flex h-11 w-full rounded-xl border border-[#EFE4E6] bg-white px-3.5 py-2 text-sm text-[#2E2226] focus:border-[#C86D7F] focus:outline-none"
                   >
                     <option value="margin">Margem sobre Venda</option>
                     <option value="markup">Markup sobre Custo</option>
@@ -223,7 +219,7 @@ export default function ConfiguracoesPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#38463E]">
+                  <label className="text-xs font-semibold text-[#5E4850]">
                     Margem Desejada Padrão (%)
                   </label>
                   <Input
@@ -238,7 +234,7 @@ export default function ConfiguracoesPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#38463E]">
+                  <label className="text-xs font-semibold text-[#5E4850]">
                     Taxa Média de Cartão (%)
                   </label>
                   <Input
@@ -256,14 +252,14 @@ export default function ConfiguracoesPage() {
           </Card>
 
           {/* Default Additional Costs */}
-          <Card className="border-[#E8E3DB] bg-white">
+          <Card className="border-[#EFE4E6] bg-white">
             <CardHeader className="pb-4 flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-base text-[#35483E] flex items-center gap-2">
-                  <DollarSign className="h-5 w-5 text-[#6D8576]" />
+                <CardTitle className="text-base text-[#4A2832] flex items-center gap-2">
+                  <DollarSign className="h-5 w-5 text-[#C86D7F]" />
                   Custos Adicionais Padrão
                 </CardTitle>
-                <CardDescription className="text-xs">
+                <CardDescription className="text-xs text-[#7C6970]">
                   Estes custos serão inseridos automaticamente nas novas receitas que criar.
                 </CardDescription>
               </div>
@@ -274,7 +270,7 @@ export default function ConfiguracoesPage() {
                 size="sm"
                 onClick={addDefaultCost}
               >
-                <Plus className="h-3.5 w-3.5 mr-1 text-[#6D8576]" />
+                <Plus className="h-3.5 w-3.5 mr-1 text-[#C86D7F]" />
                 Adicionar
               </Button>
             </CardHeader>
@@ -283,7 +279,7 @@ export default function ConfiguracoesPage() {
               {defaultAdditionalCosts.map((dac, idx) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-xl border border-[#E7E2D8] bg-[#FAF8F5] flex flex-col sm:flex-row sm:items-center gap-3"
+                  className="p-3 rounded-xl border border-[#EFE4E6] bg-[#FDFBF9] flex flex-col sm:flex-row sm:items-center gap-3"
                 >
                   <Input
                     type="text"
@@ -297,7 +293,7 @@ export default function ConfiguracoesPage() {
 
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-xs text-[#6F7D74]">R$</span>
+                      <span className="text-xs text-[#7C6970]">R$</span>
                       <Input
                         type="number"
                         step="0.01"
@@ -309,7 +305,7 @@ export default function ConfiguracoesPage() {
                       />
                     </div>
 
-                    <label className="flex items-center gap-1 text-xs text-[#4E5B53] whitespace-nowrap cursor-pointer">
+                    <label className="flex items-center gap-1 text-xs text-[#5E4850] whitespace-nowrap cursor-pointer">
                       <input
                         type="checkbox"
                         checked={dac.is_proportional}
@@ -318,7 +314,7 @@ export default function ConfiguracoesPage() {
                             is_proportional: e.target.checked,
                           })
                         }
-                        className="rounded text-[#6D8576]"
+                        className="rounded text-[#C86D7F]"
                       />
                       <span>Proporcional</span>
                     </label>
@@ -326,7 +322,7 @@ export default function ConfiguracoesPage() {
                     <button
                       type="button"
                       onClick={() => removeDefaultCost(idx)}
-                      className="p-1 rounded text-[#8C9890] hover:text-[#C85A54] transition-colors"
+                      className="p-1 rounded text-[#968289] hover:text-[#C44D56] transition-colors"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
@@ -345,13 +341,13 @@ export default function ConfiguracoesPage() {
         </form>
 
         {/* Change Password Card */}
-        <Card className="border-[#E8E3DB] bg-white">
+        <Card className="border-[#EFE4E6] bg-white">
           <CardHeader className="pb-4">
-            <CardTitle className="text-base text-[#35483E] flex items-center gap-2">
-              <Lock className="h-5 w-5 text-[#6D8576]" />
+            <CardTitle className="text-base text-[#4A2832] flex items-center gap-2">
+              <Lock className="h-5 w-5 text-[#C86D7F]" />
               Segurança e Alteração de Senha
             </CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-xs text-[#7C6970]">
               Atualize sua senha de acesso ao Supabase Auth.
             </CardDescription>
           </CardHeader>
@@ -359,7 +355,7 @@ export default function ConfiguracoesPage() {
           <CardContent>
             <form onSubmit={handlePasswordChange} className="space-y-4 max-w-md">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Nova Senha
                 </label>
                 <Input
@@ -372,7 +368,7 @@ export default function ConfiguracoesPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#38463E]">
+                <label className="text-xs font-semibold text-[#5E4850]">
                   Confirmar Nova Senha
                 </label>
                 <Input
@@ -390,7 +386,7 @@ export default function ConfiguracoesPage() {
                 disabled={passwordLoading}
                 className="font-medium"
               >
-                <KeyRound className="h-4 w-4 mr-1.5 text-[#6D8576]" />
+                <KeyRound className="h-4 w-4 mr-1.5 text-[#C86D7F]" />
                 {passwordLoading ? 'Atualizando...' : 'Atualizar Senha'}
               </Button>
             </form>

@@ -675,3 +675,4 @@ export async function saveUserSettings(settings: Partial<UserSettings>): Promise
   setLocal(STORAGE_KEY_SETTINGS, updated);
   return updated;
 }
+

@@ -256,3 +256,4 @@ describe('Cálculos e Conversão de Unidades', () => {
     expect(simulation.newTotalCost).toBe(53);
   });
 });
+

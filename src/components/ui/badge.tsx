@@ -8,17 +8,17 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          'border-transparent bg-[#EFF5F1] text-[#35483E] border-[#D4E3D9]',
+          'border-[#F7D8DF] bg-[#FDF0F3] text-[#8A3E50]',
         secondary:
-          'border-transparent bg-[#F2EFEA] text-[#55635B]',
+          'border-[#EFE4E6] bg-[#F8EEF0] text-[#6E4F57]',
         success:
-          'border-[#C7E5D3] bg-[#EAF7EE] text-[#1D6336]',
+          'border-[#C9E7D8] bg-[#EEF8F3] text-[#2D6A4F]',
         warning:
-          'border-[#F9E2C3] bg-[#FEF6EC] text-[#9A5A0A]',
+          'border-[#FCE3CB] bg-[#FFF6EE] text-[#A6601A]',
         destructive:
-          'border-[#F3CECB] bg-[#FCECEB] text-[#9C2822]',
+          'border-[#F8D2D5] bg-[#FDF2F3] text-[#A82B35]',
         outline:
-          'text-[#4A5750] border-[#E5E0D8]',
+          'text-[#5E4850] border-[#EFE4E6]',
       },
     },
     defaultVariants: {

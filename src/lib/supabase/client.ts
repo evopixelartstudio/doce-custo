@@ -17,3 +17,4 @@ export function isSupabaseConfigured(): boolean {
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   return Boolean(url && anonKey && !url.includes('your-project-id'));
 }
+

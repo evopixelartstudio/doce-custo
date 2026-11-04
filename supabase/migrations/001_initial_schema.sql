@@ -416,3 +416,4 @@ CREATE POLICY "Authenticated users can delete their own recipe photos"
   ON storage.objects FOR DELETE
   TO authenticated
   USING (bucket_id = 'recipe-photos' AND auth.uid()::text = (storage.foldername(name))[1]);
+
