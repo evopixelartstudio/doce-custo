@@ -104,3 +104,13 @@ body {
     margin: 1.5cm;
   }
 }
+
+/* Ocultar badge e indicador flutuante do Next.js dev tools */
+nextjs-portal,
+[data-nextjs-dev-tools-button],
+[data-nextjs-dev-tools] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
