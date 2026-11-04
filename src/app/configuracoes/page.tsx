@@ -8,15 +8,12 @@ import {
   Percent,
   Plus,
   Trash2,
-  Lock,
-  KeyRound,
 } from 'lucide-react';
 import { AppShell } from '@/components/layout/app-shell';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { getUserSettings, saveUserSettings } from '@/lib/data-service';
-import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 import type { UserSettings, PricingMethod } from '@/lib/types';
 import { toast } from 'sonner';
 
@@ -35,11 +32,6 @@ export default function ConfiguracoesPage() {
   const [defaultAdditionalCosts, setDefaultAdditionalCosts] = useState<
     Array<{ description: string; amount: string; is_proportional: boolean }>
   >([]);
-
-  // Password update state
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [passwordLoading, setPasswordLoading] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -113,38 +105,6 @@ export default function ConfiguracoesPage() {
       toast.error(err.message || 'Erro ao salvar configurações.');
     } finally {
       setSaving(false);
-    }
-  }
-
-  async function handlePasswordChange(e: React.FormEvent) {
-    e.preventDefault();
-    if (newPassword.length < 6) {
-      toast.error('A nova senha deve ter no mínimo 6 caracteres.');
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      toast.error('As senhas informadas não coincidem.');
-      return;
-    }
-
-    setPasswordLoading(true);
-    try {
-      if (isSupabaseConfigured()) {
-        const supabase = createClient();
-        if (supabase) {
-          const { error } = await supabase.auth.updateUser({
-            password: newPassword,
-          });
-          if (error) throw error;
-        }
-      }
-      toast.success('Senha atualizada com sucesso!');
-      setNewPassword('');
-      setConfirmPassword('');
-    } catch (err: any) {
-      toast.error(err.message || 'Erro ao atualizar senha.');
-    } finally {
-      setPasswordLoading(false);
     }
   }
 
@@ -339,59 +299,6 @@ export default function ConfiguracoesPage() {
             </Button>
           </div>
         </form>
-
-        {/* Change Password Card */}
-        <Card className="border-[#EFE4E6] bg-white">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-base text-[#4A2832] flex items-center gap-2">
-              <Lock className="h-5 w-5 text-[#C86D7F]" />
-              Segurança e Alteração de Senha
-            </CardTitle>
-            <CardDescription className="text-xs text-[#7C6970]">
-              Atualize sua senha de acesso ao Supabase Auth.
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent>
-            <form onSubmit={handlePasswordChange} className="space-y-4 max-w-md">
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#5E4850]">
-                  Nova Senha
-                </label>
-                <Input
-                  type="password"
-                  placeholder="Mínimo 6 caracteres"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#5E4850]">
-                  Confirmar Nova Senha
-                </label>
-                <Input
-                  type="password"
-                  placeholder="Repita a nova senha"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                />
-              </div>
-
-              <Button
-                type="submit"
-                variant="outline"
-                disabled={passwordLoading}
-                className="font-medium"
-              >
-                <KeyRound className="h-4 w-4 mr-1.5 text-[#C86D7F]" />
-                {passwordLoading ? 'Atualizando...' : 'Atualizar Senha'}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
       </div>
     </AppShell>
   );

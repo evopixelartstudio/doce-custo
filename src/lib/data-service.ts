@@ -131,39 +131,32 @@ export async function saveIngredient(
 
   if (isSupabaseConfigured() && supabase) {
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const payload = {
+        ...ingredientData,
+        cost_per_base_unit: baseCost,
+        updated_at: now,
+      };
 
-      if (user) {
-        const payload = {
-          ...ingredientData,
-          user_id: user.id,
-          cost_per_base_unit: baseCost,
-          updated_at: now,
-        };
+      if (ingredientData.id) {
+        const { data, error } = await supabase
+          .from('ingredients')
+          .update(payload)
+          .eq('id', ingredientData.id)
+          .select()
+          .single();
 
-        if (ingredientData.id) {
-          const { data, error } = await supabase
-            .from('ingredients')
-            .update(payload)
-            .eq('id', ingredientData.id)
-            .select()
-            .single();
+        if (!error && data) {
+          return data as Ingredient;
+        }
+      } else {
+        const { data, error } = await supabase
+          .from('ingredients')
+          .insert({ ...payload, created_at: now })
+          .select()
+          .single();
 
-          if (!error && data) {
-            return data as Ingredient;
-          }
-        } else {
-          const { data, error } = await supabase
-            .from('ingredients')
-            .insert({ ...payload, created_at: now })
-            .select()
-            .single();
-
-          if (!error && data) {
-            return data as Ingredient;
-          }
+        if (!error && data) {
+          return data as Ingredient;
         }
       }
     } catch (err) {
@@ -451,71 +444,64 @@ export async function saveRecipe(
 
   if (isSupabaseConfigured() && supabase) {
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      let recipeId = recipeData.id;
+      const recipePayload = {
+        name: recipeData.name,
+        category: recipeData.category || 'Geral',
+        description: recipeData.description || null,
+        photo_url: recipeData.photo_url || null,
+        yield_quantity: recipeData.yield_quantity,
+        yield_unit: recipeData.yield_unit,
+        prep_time_minutes: recipeData.prep_time_minutes || null,
+        pricing_method: recipeData.pricing_method || 'margin',
+        markup_percentage: recipeData.markup_percentage ?? 100,
+        target_margin_percentage: recipeData.target_margin_percentage ?? 50,
+        card_fee_percentage: recipeData.card_fee_percentage ?? 0,
+        manual_sale_price: recipeData.manual_sale_price || null,
+        updated_at: now,
+      };
 
-      if (user) {
-        let recipeId = recipeData.id;
-        const recipePayload = {
-          name: recipeData.name,
-          category: recipeData.category || 'Geral',
-          description: recipeData.description || null,
-          photo_url: recipeData.photo_url || null,
-          yield_quantity: recipeData.yield_quantity,
-          yield_unit: recipeData.yield_unit,
-          prep_time_minutes: recipeData.prep_time_minutes || null,
-          pricing_method: recipeData.pricing_method || 'margin',
-          markup_percentage: recipeData.markup_percentage ?? 100,
-          target_margin_percentage: recipeData.target_margin_percentage ?? 50,
-          card_fee_percentage: recipeData.card_fee_percentage ?? 0,
-          manual_sale_price: recipeData.manual_sale_price || null,
-          user_id: user.id,
-          updated_at: now,
-        };
-
-        if (recipeId) {
-          await supabase.from('recipes').update(recipePayload).eq('id', recipeId);
-          // Delete existing items & costs to cleanly replace
-          await supabase.from('recipe_items').delete().eq('recipe_id', recipeId);
-          await supabase.from('recipe_additional_costs').delete().eq('recipe_id', recipeId);
-        } else {
-          const { data: newRec } = await supabase
-            .from('recipes')
-            .insert({ ...recipePayload, created_at: now })
-            .select()
-            .single();
-          recipeId = newRec.id;
-        }
-
-        // Insert items
-        if (itemsData.length > 0) {
-          const itemsToInsert = itemsData.map((item, idx) => ({
-            recipe_id: recipeId,
-            item_type: item.item_type,
-            ingredient_id: item.item_type === 'ingredient' ? item.ingredient_id : null,
-            sub_recipe_id: item.item_type === 'sub_recipe' ? item.sub_recipe_id : null,
-            quantity: item.quantity,
-            unit: item.unit,
-            order_index: idx,
-          }));
-          await supabase.from('recipe_items').insert(itemsToInsert);
-        }
-
-        // Insert additional costs
-        if (additionalCostsData.length > 0) {
-          const costsToInsert = additionalCostsData.map((cost) => ({
-            recipe_id: recipeId,
-            description: cost.description,
-            amount: cost.amount,
-            is_proportional: cost.is_proportional ?? true,
-          }));
-          await supabase.from('recipe_additional_costs').insert(costsToInsert);
-        }
-
-        const reloaded = await getRecipeById(recipeId!);
-        if (reloaded) return reloaded;
+      if (recipeId) {
+        await supabase.from('recipes').update(recipePayload).eq('id', recipeId);
+        // Delete existing items & costs to cleanly replace
+        await supabase.from('recipe_items').delete().eq('recipe_id', recipeId);
+        await supabase.from('recipe_additional_costs').delete().eq('recipe_id', recipeId);
+      } else {
+        const { data: newRec } = await supabase
+          .from('recipes')
+          .insert({ ...recipePayload, created_at: now })
+          .select()
+          .single();
+        recipeId = newRec.id;
       }
+
+      // Insert items
+      if (itemsData.length > 0) {
+        const itemsToInsert = itemsData.map((item, idx) => ({
+          recipe_id: recipeId,
+          item_type: item.item_type,
+          ingredient_id: item.item_type === 'ingredient' ? item.ingredient_id : null,
+          sub_recipe_id: item.item_type === 'sub_recipe' ? item.sub_recipe_id : null,
+          quantity: item.quantity,
+          unit: item.unit,
+          order_index: idx,
+        }));
+        await supabase.from('recipe_items').insert(itemsToInsert);
+      }
+
+      // Insert additional costs
+      if (additionalCostsData.length > 0) {
+        const costsToInsert = additionalCostsData.map((cost) => ({
+          recipe_id: recipeId,
+          description: cost.description,
+          amount: cost.amount,
+          is_proportional: cost.is_proportional ?? true,
+        }));
+        await supabase.from('recipe_additional_costs').insert(costsToInsert);
+      }
+
+      const reloaded = await getRecipeById(recipeId!);
+      if (reloaded) return reloaded;
     } catch (err) {
       console.warn('Erro ao salvar receita no Supabase, usando local:', err);
     }
@@ -630,7 +616,8 @@ export async function getUserSettings(): Promise<UserSettings> {
       const { data, error } = await supabase
         .from('user_settings')
         .select('*')
-        .single();
+        .limit(1)
+        .maybeSingle();
       if (!error && data) {
         return data as UserSettings;
       }
@@ -648,24 +635,37 @@ export async function saveUserSettings(settings: Partial<UserSettings>): Promise
 
   if (isSupabaseConfigured() && supabase) {
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const { data: existing } = await supabase
+        .from('user_settings')
+        .select('id')
+        .limit(1)
+        .maybeSingle();
 
-      if (user) {
-        const { data, error } = await supabase
+      let query;
+      if (existing?.id) {
+        query = supabase
           .from('user_settings')
-          .upsert({
+          .update({
             ...settings,
-            user_id: user.id,
+            updated_at: now,
+          })
+          .eq('id', existing.id)
+          .select()
+          .single();
+      } else {
+        query = supabase
+          .from('user_settings')
+          .insert({
+            ...settings,
             updated_at: now,
           })
           .select()
           .single();
+      }
 
-        if (!error && data) {
-          return data as UserSettings;
-        }
+      const { data, error } = await query;
+      if (!error && data) {
+        return data as UserSettings;
       }
     } catch (err) {
       console.warn('Erro ao salvar configurações no Supabase:', err);

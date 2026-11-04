@@ -9,11 +9,10 @@ import {
   Calculator,
   Settings,
   Sparkles,
-  LogOut,
   CakeSlice,
+  Heart,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 
 const navItems = [
   {
@@ -45,16 +44,6 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
-
-  async function handleLogout() {
-    if (isSupabaseConfigured()) {
-      const supabase = createClient();
-      if (supabase) {
-        await supabase.auth.signOut();
-      }
-    }
-    window.location.href = '/login';
-  }
 
   return (
     <aside className="no-print hidden md:flex w-64 flex-col justify-between border-r border-[#EFE4E6] bg-[#FDFBF9] p-5 h-screen sticky top-0">
@@ -107,25 +96,17 @@ export function Sidebar() {
         </nav>
       </div>
 
-      {/* Footer Info / Sign Out */}
-      <div className="border-t border-[#EFE4E6] pt-4 flex flex-col space-y-3">
+      {/* Footer Info */}
+      <div className="border-t border-[#EFE4E6] pt-4 flex flex-col space-y-2">
         <div className="flex items-center justify-between px-2 text-xs text-[#7C6970]">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-3.5 w-3.5 text-[#C86D7F]" />
-            <span className="font-medium">Uso Individual</span>
+          <div className="flex items-center gap-1.5">
+            <Heart className="h-3.5 w-3.5 text-[#C86D7F] fill-[#C86D7F]" />
+            <span className="font-medium text-[#4A2832]">Ateliê Conectado</span>
           </div>
-          <span className="text-[10px] bg-[#F8EEF0] text-[#6E4F57] px-2 py-0.5 rounded-full font-mono">
-            v1.0
+          <span className="text-[10px] bg-[#FDF0F3] text-[#8A3E50] px-2 py-0.5 rounded-full font-medium">
+            Ativo
           </span>
         </div>
-
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-[#A82B35] hover:bg-[#FDF2F3] transition-colors w-full text-left"
-        >
-          <LogOut className="h-4 w-4 text-[#C44D56]" />
-          <span>Sair do sistema</span>
-        </button>
       </div>
     </aside>
   );
